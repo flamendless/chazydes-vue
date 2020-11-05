@@ -146,180 +146,6 @@
 						</b-form-group>
 					</ValidationProvider>
 				</b-col>
-
-				<b-col>
-					<ValidationProvider
-						name="Contact Number"
-						rules="required|digits:11"
-						v-slot="{valid, errors}">
-						<b-form-group
-							label="Contact Number:"
-							label-for="lbl_contact">
-							<b-form-input
-								v-model="form.contact_number"
-								:state="errors[0] ? false : (valid ? true : null)"
-								placeholder="Enter Contact Number">
-							</b-form-input>
-							<b-form-invalid-feedback id="input_feedback">
-								{{ errors[0] }}
-							</b-form-invalid-feedback>
-						</b-form-group>
-					</ValidationProvider>
-				</b-col>
-			</b-row>
-
-			<b-row>
-				<b-col>
-					<ValidationProvider
-						name="Sex"
-						rules="required"
-						v-slot="{valid, errors}">
-						<b-form-group
-							id="input_sex"
-							label="Sex:"
-							label-for="lbl_sex">
-							<b-input-group>
-								<b-form-select
-									id="lbl_sex"
-									:state="errors[0] ? false : (valid ? true : null)"
-									v-model="form.sex">
-									<b-form-select-option :value="null">
-										Please select sex
-									</b-form-select-option>
-									<b-form-select-option value="male">
-										Male
-									</b-form-select-option>
-									<b-form-select-option value="female">
-										Female
-									</b-form-select-option>
-								</b-form-select>
-
-								<b-input-group-append>
-									<b-input-group-text>
-										<font-awesome-icon icon="question"
-											v-if="form.sex == null" />
-										<font-awesome-icon icon="mars"
-											v-if="form.sex == 'male'" />
-										<font-awesome-icon icon="venus"
-											v-if="form.sex == 'female' "/>
-									</b-input-group-text>
-								</b-input-group-append>
-							</b-input-group>
-							<b-form-invalid-feedback id="input_feedback">
-								{{ errors[0] }}
-							</b-form-invalid-feedback>
-						</b-form-group>
-					</ValidationProvider>
-				</b-col>
-
-				<b-col>
-					<ValidationProvider
-						name="Status"
-						rules="required"
-						v-slot="{valid, errors}">
-						<b-form-group
-							id="input_status"
-							label="Status:"
-							label-for="lbl_status">
-							<b-input-group>
-								<b-form-select
-									id="lbl_status"
-									:state="errors[0] ? false : (valid ? true : null)"
-									v-model="form.status">
-									<b-form-select-option :value="null">
-										Please select status
-									</b-form-select-option>
-									<b-form-select-option value="single">
-										Single
-									</b-form-select-option>
-									<b-form-select-option value="married">
-										Married
-									</b-form-select-option>
-								</b-form-select>
-
-								<b-input-group-append>
-									<b-input-group-text>
-										<font-awesome-icon icon="question"
-											v-if="form.status == null" />
-										<font-awesome-icon icon="user"
-											v-if="form.status == 'single'" />
-										<font-awesome-icon icon="venus-mars"
-											v-if="form.status == 'married' "/>
-									</b-input-group-text>
-								</b-input-group-append>
-							</b-input-group>
-							<b-form-invalid-feedback id="input_feedback">
-								{{ errors[0] }}
-							</b-form-invalid-feedback>
-						</b-form-group>
-					</ValidationProvider>
-				</b-col>
-			</b-row>
-
-			<ValidationProvider
-				name="Address"
-				rules="required"
-				v-slot="{valid, errors}">
-				<b-form-group
-					label="Address:"
-					label-for="lbl_address">
-					<b-form-input
-						v-model="form.address"
-						:state="errors[0] ? false : (valid ? true : null)"
-						placeholder="Enter Address">
-					</b-form-input>
-					<b-form-invalid-feedback id="input_feedback">
-						{{ errors[0] }}
-					</b-form-invalid-feedback>
-				</b-form-group>
-			</ValidationProvider>
-
-			<b-row>
-				<b-col>
-					<ValidationProvider
-						name="Weight"
-						rules="required|min_value:1"
-						v-slot="{valid, errors}">
-						<b-form-group
-							label="Weight:"
-							label-for="lbl_weight">
-							<b-input-group append="kg">
-								<b-form-input
-									type="number"
-									step="any"
-									v-model="form.weight"
-									:state="errors[0] ? false : (valid ? true : null)">
-								</b-form-input>
-							</b-input-group>
-							<b-form-invalid-feedback id="input_feedback">
-								{{ errors[0] }}
-							</b-form-invalid-feedback>
-						</b-form-group>
-					</ValidationProvider>
-				</b-col>
-
-				<b-col>
-					<ValidationProvider
-						name="Height"
-						rules="required|min_value:1"
-						v-slot="{valid, errors}">
-						<b-form-group
-							label="Height:"
-							label-for="lbl_height">
-							<b-input-group append="m">
-								<b-form-input
-									type="number"
-									step="any"
-									v-model="form.height"
-									:state="errors[0] ? false : (valid ? true : null)">
-								</b-form-input>
-							</b-input-group>
-							<b-form-invalid-feedback id="input_feedback">
-								{{ errors[0] }}
-							</b-form-invalid-feedback>
-						</b-form-group>
-					</ValidationProvider>
-				</b-col>
 			</b-row>
 
 			<b-row>
@@ -343,14 +169,11 @@
 </template>
 
 <script>
-const Axios = require("axios");
-
 export default {
 	name: "SignUp",
 	props: {
 		form: Object,
 		override_submit: Function,
-		is_edit: Boolean,
 	},
 
 	mounted: function() {
@@ -372,31 +195,11 @@ export default {
 		on_submit: function() {
 			this.loading = true;
 
-			if (this.override_submit) {
-				this.override_submit(this).catch(err => {
-					this.fail = true;
-					this.error_msg = err;
-					this.loading = false;
-				});
-			} else {
-				Axios.get("/validate_email/" + this.form.email)
-				.then(res => {
-					const data = res.data;
-					if (data.success && data.results.length > 0)
-					{
-						this.$refs.observer.setErrors({
-							email: "E-Mail already registered"
-						});
-						this.loading = false;
-					}
-					else
-					{
-						this.$localStorage.set("form", JSON.stringify(this.form));
-						window.location.href = "/registration?page=2";
-						this.loading = false;
-					}
-				});
-			}
+			this.override_submit(this).catch(err => {
+				this.fail = true;
+				this.error_msg = err;
+				this.loading = false;
+			});
 		},
 
 		reset_form: function() {
@@ -409,12 +212,6 @@ export default {
 				this.form.mname = "";
 				this.form.lname = "";
 				this.form.birthdate = null;
-				this.form.sex = null;
-				this.form.address = "";
-				this.form.status = null;
-				this.form.contact_number = "";
-				this.form.weight = 0;
-				this.form.height = 0;
 
 				requestAnimationFrame(() => {
 					this.$refs.observer.reset();

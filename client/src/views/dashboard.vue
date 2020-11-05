@@ -4,42 +4,20 @@
 		justified
 		v-model="tab"
 		@activate-tab="on_tab_activated">
-		<b-tab title="Driver" lazy>
-			<TableDrivers :is_admin="is_admin" />
-		</b-tab>
-		<b-tab title="License" lazy>
-			<TableLicenses :is_admin="is_admin" />
-		</b-tab>
-		<b-tab title="Tricycle" lazy>
-			<TableTricycles :is_admin="is_admin" />
-		</b-tab>
-		<b-tab title="Bukyo" lazy>
-			<TableBukyo :is_admin="is_admin" />
-		</b-tab>
-		<b-tab title="Terminal" lazy>
-			<TableTerminals :is_admin="is_admin" />
-		</b-tab>
+		<!-- <b&#45;tab title="Driver" lazy> -->
+		<!-- 	<TableDrivers :is_admin="is_admin" /> -->
+		<!-- </b&#45;tab> -->
 	</b-tabs>
 </div>
 </template>
 
 <script>
-import TableDrivers from "@/components/table_drivers.vue"
-import TableLicenses from "@/components/table_licenses.vue"
-import TableTricycles from "@/components/table_tricycles.vue"
-import TableBukyo from "@/components/table_bukyo.vue"
-import TableTerminals from "@/components/table_terminals.vue"
-
-const Axios = require("axios");
+// import TableDrivers from "@/components/table_drivers.vue"
 
 export default {
 	name: "Dashboard",
 	components: {
-		TableDrivers,
-		TableLicenses,
-		TableTricycles,
-		TableBukyo,
-		TableTerminals,
+		// TableDrivers,
 	},
 
 	mounted: function() {

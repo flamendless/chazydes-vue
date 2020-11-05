@@ -26,30 +26,6 @@ const routes = [
 		name: "Dashboard",
 		component: Dashboard,
 	},
-	{
-		path: "/view_info",
-		name: "ViewInfo",
-		component: () => import("../views/info.vue"),
-		props: (route) => ({
-			...route.params
-		}),
-	},
-	{
-		path: "/edit_info",
-		name: "EditInfo",
-		component: () => import("../views/edit_info.vue"),
-		props: (route) => ({
-			...route.params
-		}),
-	},
-	{
-		path: "/add",
-		name: "Add",
-		component: () => import("../views/add.vue"),
-		props: (route) => ({
-			...route.params
-		}),
-	},
 ]
 
 const router = new VueRouter({

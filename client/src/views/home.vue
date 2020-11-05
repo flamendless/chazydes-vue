@@ -39,7 +39,7 @@ export default {
 			signed_in: false,
 			href_sign_in: "/sign_in",
 			href_sign_up: "/registration",
-			website_name: "Regulatory Board of Tricycle and Bukyo Zone-3 TODA",
+			website_name: "Chazydes",
 		}
 	},
 }
