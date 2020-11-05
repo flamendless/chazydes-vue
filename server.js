@@ -47,7 +47,7 @@ app.get("/validate_email/:email", (req, res) => {
 
 app.post("/register_user", (req, res) => {
 	const args = req.body;
-	const pw_hash = Bcrypt.hashSync(args.password, SALT_ROUNDS);
+	const pw_hash = bcrypt.hashSync(args.password, SALT_ROUNDS);
 
 	const q_user = `INSERT INTO tbl_user(email, pw_hash) VALUES(?, ?)`;
 	const q_acc = `INSERT INTO tbl_account(fname, mname, lname, birthdate) VALUES(?, ?, ?, ?)`;
@@ -68,7 +68,7 @@ app.post("/register_user", (req, res) => {
 	}));
 });
 
-app.post("/login", (req, res) => {
+app.post("/sign_in", (req, res) => {
 	const args = req.body;
 	const query = `SELECT pw_hash FROM tbl_user WHERE email = ?`;
 
@@ -76,7 +76,7 @@ app.post("/login", (req, res) => {
 	.then(data => {
 		if (data.success && data.results.length > 0) {
 			const match = bcrypt.compareSync(args.password, data.results[0].pw_hash);
-			res.json({success: match});
+			res.json(data);
 		} else res.json({success: false});
 	}).catch(err => res.json({
 		success: false,

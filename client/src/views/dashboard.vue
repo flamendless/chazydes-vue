@@ -32,15 +32,6 @@ export default {
 
 		if (sessionStorage["is_admin"])
 			this.is_admin = true;
-		else {
-			this.$router.push({
-				name: "ViewInfo",
-				params: {
-					driver: true,
-					info: this.$route.params.info,
-				}
-			});
-		}
 	},
 
 	methods: {

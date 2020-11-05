@@ -1,15 +1,7 @@
 <template>
 <div class="sign_in">
-	<b-alert v-model="show_alert_not_verified" variant="danger">
-		This account has not been verified by the admin
-	</b-alert>
-
 	<b-alert v-model="show_alert_fail" variant="danger">
 		E-Mail and password does not match
-	</b-alert>
-
-	<b-alert v-model="show_wait_verification" variant="info">
-		Wait for admin verification before you can sign in
 	</b-alert>
 
 	<ValidationObserver ref="observer" v-slot="{handleSubmit}">
@@ -72,9 +64,7 @@ export default {
 	data: function() {
 		return {
 			loading: false,
-			show_alert_not_verified: false,
 			show_alert_fail: false,
-			show_wait_verification: false,
 			form: {
 				email: "",
 				password: "",
@@ -84,9 +74,7 @@ export default {
 
 	mounted: function() {
 		this.loading = false;
-		this.show_alert_not_verified = false;
 		this.show_alert_fail = false;
-		this.show_wait_verification = this.$route.query.wait_verification == 1;
 
 		if (sessionStorage["signed_in"])
 			this.$router.push({
@@ -97,9 +85,7 @@ export default {
 	methods: {
 		on_submit: function() {
 			this.loading = true;
-			this.show_alert_not_verified = false;
 			this.show_alert_fail = false;
-			this.show_wait_verification = false;
 
 			Axios.post("/sign_in", {
 				email: this.form.email,
@@ -111,21 +97,16 @@ export default {
 					const res = data.results[0];
 					this.loading = false;
 
-					if (res.verified == 1)
-					{
-						sessionStorage["email"] = data.email;
+					sessionStorage["email"] = data.email;
 
-						if (res.is_admin)
-							sessionStorage["is_admin"] = true;
+					if (res.is_admin)
+						sessionStorage["is_admin"] = true;
 
-						sessionStorage["signed_in"] = true;
-						this.$router.push({
-							name: "Dashboard",
-							info: res,
-						});
-					}
-					else
-						this.show_alert_not_verified = true;
+					sessionStorage["signed_in"] = true;
+					this.$router.push({
+						name: "Dashboard",
+						info: res,
+					});
 				}
 				else
 				{
