@@ -9,6 +9,9 @@ const DB = new Database();
 const cors = require("cors");
 app.use(cors());
 
+const bcrypt = require("bcryptjs");
+const SALT_ROUNDS = 8;
+
 const multer = require("multer");
 const disk_storage = multer.diskStorage({
 	destination: "client/src/uploads/",
@@ -32,41 +35,61 @@ app.use(BodyParser.json());
 app.get("/validate_email/:email", (req, res) => {
 	const args = req.params;
 	const params = [args.email];
-	const query = `SELECT email FROM Driver WHERE email = ?`
+	const query = `SELECT user_id FROM tbl_user WHERE email = ?`
 
 	DB.query(query, params).then(data => {
-		if (data.success)
-			res.json(data);
-		else
-			res.json({success: false});
+		res.json(data);
 	}).catch(err => res.json({
 		success: false,
 		err: err,
 	}));
 });
 
-app.post("/sign_in", (req, res) => {
+app.post("/register_user", (req, res) => {
 	const args = req.body;
-	const params = [args.email, args.password];
-	const query = `SELECT * FROM Driver WHERE email = ? AND password = ?`;
+	const pw_hash = Bcrypt.hashSync(args.password, SALT_ROUNDS);
 
-	DB.query(query, params).then(data => {
-		data.email = args.email;
-		if (data.success)
-			res.json(data);
-		else
-			res.json({success: false});
+	const q_user = `INSERT INTO tbl_user(email, pw_hash) VALUES(?, ?)`;
+	const q_acc = `INSERT INTO tbl_account(fname, mname, lname, birthdate) VALUES(?, ?, ?, ?)`;
+
+	DB.query(q_user, [args.email, pw_hash])
+	.then(data => {
+		if (data.success) {
+			DB.query(q_acc, [args.fname, args.mname, args.lname, args.birthdate])
+			.then(data => {
+				if (data.success)
+					res.json(data);
+				else res.json({success: false});
+			});
+		} else res.json({success: false});
 	}).catch(err => res.json({
 		success: false,
 		err: err,
 	}));
 });
 
-app.post("/verify_account", (req, res) => {
+app.post("/login", (req, res) => {
 	const args = req.body;
-	const query = `UPDATE Driver SET verified = 1 WHERE email = ?`
+	const query = `SELECT pw_hash FROM tbl_user WHERE email = ?`;
 
-	DB.query(query, [args.email]).then(data => {
+	DB.query(query, [args.email])
+	.then(data => {
+		if (data.success && data.results.length > 0) {
+			const match = bcrypt.compareSync(args.password, data.results[0].pw_hash);
+			res.json({success: match});
+		} else res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
+app.get("/validate_email/:email", (req, res) => {
+	const args = req.params;
+	const query = `SELECT email FROM tbl_user WHERE email = ?`
+
+	DB.query(query, [args.email])
+	.then(data => {
 		if (data.success)
 			res.json(data);
 		else
@@ -77,11 +100,16 @@ app.post("/verify_account", (req, res) => {
 	}));
 });
 
-app.post("/delete_driver", (req, res) => {
+app.post("/get_profile", (req, res) => {
 	const args = req.body;
-	const query = `DELETE FROM Driver WHERE id = ?`;
+	const query = `SELECT fname, mname, lname, birthdate
+		FROM tbl_account
+		INNER JOIN tbl_user
+		ON tbl_account.account_id = tbl_user.user_id
+		WHERE email = ?`;
 
-	DB.query(query, [args.driver_id]).then(data => {
+	DB.query(query, [args.email])
+	.then(data => {
 		if (data.success)
 			res.json(data);
 		else
@@ -91,6 +119,23 @@ app.post("/delete_driver", (req, res) => {
 		err: err,
 	}));
 });
+
+app.get("/get_items/:limit", (req, res) => {
+	const args = req.params;
+	const query = `SELECT * FROM tbl_item LIMIT ? ?`
+
+	DB.query(query, [args.limit])
+	.then(data => {
+		if (data.success)
+			res.json(data);
+		else
+			res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
 
 app.listen(PORT, () => {
 	console.log(`server listening at http://localhost:${PORT}`)

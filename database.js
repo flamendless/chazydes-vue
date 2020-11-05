@@ -10,7 +10,7 @@ class Database
 			user: "root",
 			password: "",
 			socketPath: "/opt/lampp/var/mysql/mysql.sock",
-			database: "TODA",
+			database: "chazydes",
 		});
 
 		this.db.connect(function(err) {
