@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 05, 2020 at 09:43 AM
+-- Generation Time: Nov 06, 2020 at 01:37 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -46,6 +46,61 @@ INSERT INTO `tbl_account` (`account_id`, `fname`, `mname`, `lname`, `birthdate`)
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_image`
+--
+
+CREATE TABLE `tbl_image` (
+  `image_id` int(11) NOT NULL,
+  `filename` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_item`
+--
+
+CREATE TABLE `tbl_item` (
+  `item_id` int(11) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `code` varchar(50) DEFAULT NULL,
+  `qty` int(11) DEFAULT NULL,
+  `orig_price` decimal(10,0) DEFAULT NULL,
+  `ret_price` decimal(10,0) DEFAULT NULL,
+  `supplier_id` int(11) DEFAULT NULL,
+  `image_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_item`
+--
+
+INSERT INTO `tbl_item` (`item_id`, `name`, `code`, `qty`, `orig_price`, `ret_price`, `supplier_id`, `image_id`) VALUES
+(1, 'Item 1', 'ITEM1', 0, '20', '25', NULL, NULL),
+(2, 'Item 2', 'ITEM2', 0, '30', '35', NULL, NULL),
+(3, 'Item 3', 'ITEM3', 0, '31', '36', NULL, NULL),
+(4, 'Item 4', 'ITEM4', 0, '32', '37', NULL, NULL),
+(5, 'Item 5', 'ITEM5', 0, '33', '38', NULL, NULL),
+(6, 'Item 6', 'ITEM6', 0, '34', '39', NULL, NULL),
+(7, 'Item 7', 'ITEM7', 0, '35', '40', NULL, NULL),
+(8, 'Item 8', 'ITEM8', 0, '36', '41', NULL, NULL),
+(9, 'Item 9', 'ITEM9', 0, '37', '42', NULL, NULL),
+(10, 'Item 10', 'ITEM10', 0, '38', '43', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_supplier`
+--
+
+CREATE TABLE `tbl_supplier` (
+  `supplier_id` int(11) NOT NULL,
+  `name` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_user`
 --
 
@@ -73,6 +128,24 @@ ALTER TABLE `tbl_account`
   ADD PRIMARY KEY (`account_id`);
 
 --
+-- Indexes for table `tbl_image`
+--
+ALTER TABLE `tbl_image`
+  ADD PRIMARY KEY (`image_id`);
+
+--
+-- Indexes for table `tbl_item`
+--
+ALTER TABLE `tbl_item`
+  ADD PRIMARY KEY (`item_id`);
+
+--
+-- Indexes for table `tbl_supplier`
+--
+ALTER TABLE `tbl_supplier`
+  ADD PRIMARY KEY (`supplier_id`);
+
+--
 -- Indexes for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
@@ -87,6 +160,24 @@ ALTER TABLE `tbl_user`
 --
 ALTER TABLE `tbl_account`
   MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_image`
+--
+ALTER TABLE `tbl_image`
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tbl_item`
+--
+ALTER TABLE `tbl_item`
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `tbl_supplier`
+--
+ALTER TABLE `tbl_supplier`
+  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_user`
