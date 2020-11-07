@@ -122,7 +122,7 @@ app.post("/get_profile", (req, res) => {
 
 app.get("/get_items/:limit", (req, res) => {
 	const args = req.params;
-	const query = `SELECT * FROM tbl_item LIMIT ? ?`
+	const query = `SELECT * FROM tbl_item LIMIT ?`;
 
 	DB.query(query, [args.limit])
 	.then(data => {
