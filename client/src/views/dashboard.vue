@@ -15,9 +15,9 @@
 				<b-card-title class="card-title">{{items[items_per_row * (i-1) + j-1].name}}</b-card-title>
 				<b-card-text><b>Code: </b>{{items[index(i,j)].code}}</b-card-text>
 				<b-card-footer>
-					<b-badge variant="primary">{{"Quantity: " + items[index(i,j)].qty}}</b-badge>
-					<b-badge variant="info">{{"Original Price: " + items[index(i,j)].orig_price}}</b-badge>
-					<b-badge variant="success">{{"Retail Price: " + items[index(i,j)].ret_price}}</b-badge>
+					<b-badge variant="primary">Quantity: {{items[index(i,j)].qty}}</b-badge>
+					<b-badge variant="info">Original Price: {{items[index(i,j)].orig_price}}</b-badge>
+					<b-badge variant="success">Retail Price: {{items[index(i,j)].ret_price}}</b-badge>
 				</b-card-footer>
 			</b-card>
 			<br />
@@ -27,12 +27,11 @@
 </template>
 
 <script>
-// import TableDrivers from "@/components/table_drivers.vue"
 const Axios = require("axios");
+
 export default {
 	name: "Dashboard",
 	components: {
-		// TableDrivers,
 	},
 
 	mounted: function() {
