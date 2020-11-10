@@ -11,6 +11,7 @@
 				rules="required|email"
 				v-slot="{valid, errors}">
 				<b-form-group
+					class="form-group"
 					label="Email Address:"
 					label-for="lbl_email">
 					<b-form-input
@@ -30,7 +31,9 @@
 				vid="password"
 				rules="required|min:8"
 				v-slot="{valid, errors}">
-				<b-form-group label="Password:">
+				<b-form-group
+					class="form-group"
+					label="Password:">
 					<b-form-input
 						type="password"
 						v-model="form.password"
@@ -122,5 +125,11 @@ export default {
 <style lang="scss" scoped>
 .sign_in {
 	padding: 16px;
+}
+
+.sign_in .form-group {
+	width: 50%;
+	margin: auto;
+	padding: 12px;
 }
 </style>

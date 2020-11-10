@@ -85,7 +85,8 @@ INSERT INTO `tbl_item` (`item_id`, `name`, `code`, `qty`, `orig_price`, `ret_pri
 (7, 'Item 7', 'ITEM7', 0, '35', '40', NULL, NULL),
 (8, 'Item 8', 'ITEM8', 0, '36', '41', NULL, NULL),
 (9, 'Item 9', 'ITEM9', 0, '37', '42', NULL, NULL),
-(10, 'Item 10', 'ITEM10', 0, '38', '43', NULL, NULL);
+(10, 'Item 10', 'ITEM10', 0, '38', '43', NULL, NULL),
+(11, 'Item 11', 'ITEM11', 0, '39', '44', NULL, NULL);
 
 -- --------------------------------------------------------
 

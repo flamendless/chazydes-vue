@@ -15,7 +15,6 @@
 			>
 				{{ item.title }}
 			</b-nav-item>
-
 			<b-nav-item-dropdown right v-if="is_admin">
 				<template #button-content>Add</template>
 				<b-dropdown-item @click="on_add_admin">Add Admin</b-dropdown-item>
@@ -95,6 +94,11 @@ export default {
 					route: "#home",
 					route2: "/",
 					title: "Home",
+				},
+				{
+					route: "#profile",
+					route2: "/profile",
+					title: "Profile",
 				},
 			],
 		}

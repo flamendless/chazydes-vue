@@ -8,12 +8,27 @@
 		<!-- 	<TableDrivers :is_admin="is_admin" /> -->
 		<!-- </b&#45;tab> -->
 	</b-tabs>
+	<div >
+		<b-card-group deck class="dashboard_gallery" v-for="i in (items.length / items_per_row)" :key="'item' + i">
+			<b-card class="gallery-item" v-for="j in items_per_row" :key="'card' + j">
+				<b-card-img class="item-image" src="../uploads/goblet.png" />
+				<b-card-title class="card-title">{{items[items_per_row * (i-1) + j-1].name}}</b-card-title>
+				<b-card-text><b>Code: </b>{{items[index(i,j)].code}}</b-card-text>
+				<b-card-footer>
+					<b-badge variant="primary">{{"Quantity: " + items[index(i,j)].qty}}</b-badge>
+					<b-badge variant="info">{{"Original Price: " + items[index(i,j)].orig_price}}</b-badge>
+					<b-badge variant="success">{{"Retail Price: " + items[index(i,j)].ret_price}}</b-badge>
+				</b-card-footer>
+			</b-card>
+			<br />
+		</b-card-group>
+	</div>
 </div>
 </template>
 
 <script>
 // import TableDrivers from "@/components/table_drivers.vue"
-
+const Axios = require("axios");
 export default {
 	name: "Dashboard",
 	components: {
@@ -32,6 +47,15 @@ export default {
 
 		if (sessionStorage["is_admin"])
 			this.is_admin = true;
+
+		Axios.get("/get_items/10").then(res => {
+			const data = res.data;
+			this.items = data.results;
+			console.log("Item Length: " + data.results.length)
+			this.items.forEach(function(item) {
+				console.log("Name: " + item.name)
+			})
+		});
 	},
 
 	methods: {
@@ -42,6 +66,11 @@ export default {
 			url.search = sp.toString();
 			const new_url = url.toString();
 			window.history.replaceState({}, null, new_url);
+		},
+
+		index: function(i, j){
+			this.items_per_row = 5;
+			return (this.items_per_row * (i-1) + (j-1));
 		}
 	},
 
@@ -51,13 +80,41 @@ export default {
 			signed_in: false,
 			email: null,
 			tab: 0,
+			items_per_row: 5,
+			items: [],
 		}
 	},
+
 }
 </script>
 
 <style lang="scss" scoped>
 .dashboard {
 	padding: 16px;
+}
+
+.dashboard .dashboard_gallery
+{
+	margin: 16px;
+}
+
+.dashboard .dashboard_gallery .gallery-item
+{
+	padding: 16px;
+	box-shadow: 0 0 8px grey;
+}
+
+.dashboard .dashboard_gallery
+.gallery-item .item-image
+{
+	padding: 8px;
+	box-shadow: 0 0 4px grey;
+}
+
+.dashboard .dashboard_gallery
+.gallery-item .card-title
+{
+	padding: 16px;
+	text-align: center;
 }
 </style>
