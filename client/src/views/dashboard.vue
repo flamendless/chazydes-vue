@@ -8,7 +8,7 @@
 		<!-- 	<TableDrivers :is_admin="is_admin" /> -->
 		<!-- </b&#45;tab> -->
 	</b-tabs>
-	<div >
+	<div>
 		<b-card-group deck class="dashboard_gallery" v-for="i in (items.length / items_per_row)" :key="'item' + i">
 			<b-card class="gallery-item" v-for="j in items_per_row" :key="'card' + j">
 				<b-card-img class="item-image" src="../uploads/goblet.png" />
@@ -16,8 +16,8 @@
 				<b-card-text><b>Code: </b>{{items[index(i,j)].code}}</b-card-text>
 				<b-card-footer>
 					<b-badge variant="primary">Quantity: {{items[index(i,j)].qty}}</b-badge>
-					<b-badge variant="info">Original Price: {{items[index(i,j)].orig_price}}</b-badge>
-					<b-badge variant="success">Retail Price: {{items[index(i,j)].ret_price}}</b-badge>
+					<b-badge variant="info">Original Price: <span>&#8369;</span>{{items[index(i,j)].orig_price}}</b-badge>
+					<b-badge variant="success">Retail Price: <span>&#8369;</span>{{items[index(i,j)].ret_price}}</b-badge>
 				</b-card-footer>
 			</b-card>
 			<br />

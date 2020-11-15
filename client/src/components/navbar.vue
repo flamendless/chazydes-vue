@@ -3,9 +3,16 @@
 	<b-navbar-brand :href="home">
 		{{ website_name }}
 	</b-navbar-brand>
+
+
 	<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
 	<b-collapse id="nav-collapse" is-nav>
+		<b-navbar-nav class="add-button">
+			<b-nav-item  to="/transaction">
+				<img class="add-button-img" src="../uploads/add.png">
+			</b-nav-item>
+		</b-navbar-nav>
 		<b-navbar-nav class="ml-auto">
 			<b-nav-item
 				v-for="(item, i) in items" :key="i"
@@ -15,6 +22,7 @@
 			>
 				{{ item.title }}
 			</b-nav-item>
+
 			<b-nav-item-dropdown right v-if="is_admin">
 				<template #button-content>Add</template>
 				<b-dropdown-item @click="on_add_admin">Add Admin</b-dropdown-item>
@@ -115,5 +123,13 @@ export default {
 	font-weight: bold;
 	margin-left: 8px;
 	margin-right: 8px;
+}
+
+.add-button{
+	width: 5%;
+}
+
+.add-button-img{
+	width: 100%;
 }
 </style>

@@ -2,6 +2,7 @@ import Vue from "vue"
 import VueRouter from "vue-router"
 import Home from "../views/home.vue"
 import Dashboard from "../views/dashboard.vue"
+import Transaction from "../views/transaction.vue"
 
 Vue.use(VueRouter);
 
@@ -25,6 +26,11 @@ const routes = [
 		path: "/dashboard",
 		name: "Dashboard",
 		component: Dashboard,
+	},
+	{
+		path: "/transaction",
+		name: "Transaction",
+		component: Transaction,
 	},
 ]
 
