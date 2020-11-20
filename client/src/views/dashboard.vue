@@ -11,14 +11,29 @@
 	<div>
 		<b-card-group deck class="dashboard_gallery" v-for="i in (items.length / items_per_row)" :key="'item' + i">
 			<b-card class="gallery-item" v-for="j in items_per_row" :key="'card' + j">
+				<b-link
+					:to="{
+						name: 'Item',
+						path: '/dashboard/' + items[index(i,j)].code,
+						params: {
+							name: items[index(i,j)].name,
+							code: items[index(i,j)].code,
+							qty: items[index(i,j)].qty,
+							orig_price: items[index(i,j)].orig_price,
+							ret_price: items[index(i,j)].ret_price,
+						},
+					}"
+				>
+
 				<b-card-img class="item-image" src="../uploads/goblet.png" />
-				<b-card-title class="card-title">{{items[items_per_row * (i-1) + j-1].name}}</b-card-title>
+				<b-card-title class="card-title">{{items[index(i,j)].name}}</b-card-title>
 				<b-card-text><b>Code: </b>{{items[index(i,j)].code}}</b-card-text>
 				<b-card-footer>
 					<b-badge variant="primary">Quantity: {{items[index(i,j)].qty}}</b-badge>
 					<b-badge variant="info">Original Price: <span>&#8369;</span>{{items[index(i,j)].orig_price}}</b-badge>
 					<b-badge variant="success">Retail Price: <span>&#8369;</span>{{items[index(i,j)].ret_price}}</b-badge>
 				</b-card-footer>
+				</b-link>
 			</b-card>
 			<br />
 		</b-card-group>
@@ -32,6 +47,7 @@ const Axios = require("axios");
 export default {
 	name: "Dashboard",
 	components: {
+
 	},
 
 	mounted: function() {

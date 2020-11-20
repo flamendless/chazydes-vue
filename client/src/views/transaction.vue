@@ -55,6 +55,8 @@
 
 				</b-col>
 				<b-table
+					hover
+					striped
 					:items="items"
 					:filter="filter"
 					:fields="visible_fields"
@@ -150,24 +152,26 @@ export default {
 	margin-top: 24px;
 }
 
-.submitButton
+.transaction .submitButton
 {
 	display: block;
 	margin-left: auto;
 }
+.transaction .formItems
 .formTitle1
 {
 	font-weight: bold;
 	text-align: center;
 }
 
+.transaction .formItems
 .formInput
 {
 	margin: auto;
 	margin-top: 24px;
 }
 
-.formItems
+.transaction .formItems
 {
 	width: 50%;
 	display: block;
