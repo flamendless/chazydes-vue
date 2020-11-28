@@ -136,6 +136,19 @@ app.get("/get_items/:limit", (req, res) => {
 	}));
 });
 
+app.get("/get_customers", (req, res) => {
+	const args = req.params;
+	const query = `SELECT * FROM tbl_customer`;
+
+	DB.query(query)
+	.then(data => {
+		if (data.success) res.json(data);
+		else res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+})
 
 app.listen(PORT, () => {
 	console.log(`server listening at http://localhost:${PORT}`)
