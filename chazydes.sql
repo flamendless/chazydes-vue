@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 06, 2020 at 01:37 PM
+-- Generation Time: Nov 28, 2020 at 12:15 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -42,6 +42,18 @@ CREATE TABLE `tbl_account` (
 
 INSERT INTO `tbl_account` (`account_id`, `fname`, `mname`, `lname`, `birthdate`) VALUES
 (1, 'Brandon', 'Blanker', 'Lim-it', '2020-11-02');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_customer`
+--
+
+CREATE TABLE `tbl_customer` (
+  `customer_id` int(11) NOT NULL,
+  `fullname` varchar(500) DEFAULT NULL,
+  `address` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -85,8 +97,7 @@ INSERT INTO `tbl_item` (`item_id`, `name`, `code`, `qty`, `orig_price`, `ret_pri
 (7, 'Item 7', 'ITEM7', 0, '35', '40', NULL, NULL),
 (8, 'Item 8', 'ITEM8', 0, '36', '41', NULL, NULL),
 (9, 'Item 9', 'ITEM9', 0, '37', '42', NULL, NULL),
-(10, 'Item 10', 'ITEM10', 0, '38', '43', NULL, NULL),
-(11, 'Item 11', 'ITEM11', 0, '39', '44', NULL, NULL);
+(10, 'Item 10', 'ITEM10', 0, '38', '43', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -129,6 +140,12 @@ ALTER TABLE `tbl_account`
   ADD PRIMARY KEY (`account_id`);
 
 --
+-- Indexes for table `tbl_customer`
+--
+ALTER TABLE `tbl_customer`
+  ADD PRIMARY KEY (`customer_id`);
+
+--
 -- Indexes for table `tbl_image`
 --
 ALTER TABLE `tbl_image`
@@ -161,6 +178,12 @@ ALTER TABLE `tbl_user`
 --
 ALTER TABLE `tbl_account`
   MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_customer`
+--
+ALTER TABLE `tbl_customer`
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_image`
