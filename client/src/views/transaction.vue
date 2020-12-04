@@ -33,7 +33,7 @@
 								</b-form-invalid-feedback>
 
 								<datalist id="customer-list">
-									<option v-for="customer in customerNames" :key="customer">
+									<option v-for="customer in customer_names" :key="customer">
 										{{customer.fullname}}
 									</option>
 								</datalist>
@@ -71,7 +71,7 @@
 										<input type="radio" id="walkin_button" value="walk-in" v-model="form.purchase_mode">
 									</span>
 									<label for="walkin_button"> Walk-in</label>
-																</div>
+								</div>
 								<b-form-invalid-feedback id="input_feedback">
 									{{ errors[0] }}
 								</b-form-invalid-feedback>
@@ -111,8 +111,8 @@
 							hover
 							striped
 							selectable
+							select-mode="multiple"
 							@row-selected="onRowSelected"
-							:select-mode="selectMode"
 							:items="items"
 							:filter="filter"
 							:fields="visible_fields"
@@ -129,14 +129,14 @@
 						</template>
 						</b-table>
 						<p>
-							Selected Rows: {{selectedRows}}
-							Length: {{selectedRows.length}}
+							Selected Rows: {{selected_rows}}
+							Length: {{selected_rows.length}}
 						</p>
 					</div>
 				</b-tab>
 				<b-tab title="Item Quantity">
 					<div class="formItems">
-						<b-form-group v-for="quantity_list in selectedRows" :key="quantity_list">
+						<b-form-group v-for="quantity_list in selected_rows" :key="quantity_list">
 							<ValidationProvider
 								name="ItemQuantity"
 								rules="required"
@@ -173,14 +173,14 @@ export default {
 	},
 
 	mounted: function() {
-		Axios.get("/get_items/10").then(res => {
+		Axios.get("/get_items_list").then(res => {
 			const data = res.data;
 			this.items = data.results;
 		});
 
 		Axios.get("/get_customers").then(res => {
-			const data2 = res.data;
-			this.customerNames = data2.results;
+			const data = res.data;
+			this.customer_names = data.results;
 		});
 
 	},
@@ -189,8 +189,7 @@ export default {
 		return {
 			toggle_readonly: false,
 			search: "",
-			selectMode: 'multiple',
-			selectedRows: [],
+			selected_rows: [],
 			form: {
 				fullname: "",
 				address: "",
@@ -206,7 +205,7 @@ export default {
 				{key: "ret_price", sortable: true, visible: true, label: "Retail Price"},
 			],
 			items: [],
-			customerNames: [],
+			customer_names: [],
 		}
 	},
 
@@ -217,47 +216,41 @@ export default {
 	},
 
 	methods: {
-		onFiltered(filteredItems) {
-			this.totalRows = filteredItems.length;
-			this.currentPage = 1;
-		},
-
 		on_search_change: function() {
 			if (this.search.length > 0) this.filter = this.search;
 			else this.filter = null;
 		},
 
-		on_submit: function() {
-			for (let i=0; i<this.selectedRows.length; i++){
-				this.form.item_details.push(
-					{item_name: this.selectedRows[i].name, item_quantity: this.selectedRows[i].item_quantity}
-				)
-			}
-			console.log(JSON.stringify(this.form));
-			alert(JSON.stringify(this.form));
-		},
-
 		onRowSelected(items) {
-			this.selectedRows = items;
+			this.selected_rows = items;
 		},
 
 		autofill_address: function(customer_name) {
-			for (let i=0; i<this.customerNames.length; i++){
-				if (this.customerNames[i].fullname===customer_name){
-					this.form.address = this.customerNames[i].address
+			for (let i = 0; i < this.customer_names.length; i++){
+				if (this.customer_names[i].fullname === customer_name){
+					this.form.address = this.customer_names[i].address
 					this.toggle_readonly = true;
 					break;
 				}
-				else{
+				else {
 					this.toggle_readonly = false;
 				}
 			}
 		},
+
+		on_submit: function() {
+			for (let i = 0; i < this.selected_rows.length; i++){
+				this.form.item_details.push({
+					item_name: this.selected_rows[i].name,
+					item_quantity: this.selected_rows[i].item_quantity
+				});
+			}
+
+			console.log(JSON.stringify(this.form));
+		},
 	}
 }
-
 </script>
-
 
 <style lang="scss" scoped>
 .transaction

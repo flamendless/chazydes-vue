@@ -10,7 +10,7 @@
 	<b-collapse id="nav-collapse" is-nav>
 		<b-navbar-nav class="add-button">
 			<b-nav-item  to="/transaction">
-				<img class="add-button-img" src="../uploads/add.png">
+				<img class="add-button-img" src="../assets/add.png">
 			</b-nav-item>
 		</b-navbar-nav>
 		<b-navbar-nav class="ml-auto">

@@ -50,7 +50,6 @@ export default {
 				},
 				{
 					key: 'retail_price',
-
 				},
 				{
 					key: 'original_price',
@@ -58,10 +57,14 @@ export default {
 				},
 			],
 
-
 			items: [
-				{item_name: this.name, item_code: this.code, item_quantity: this.qty,
-				retail_price: this.ret_price, original_price: this.orig_price},
+				{
+					item_name: this.name,
+					item_code: this.code,
+					item_quantity: this.qty,
+					retail_price: this.ret_price,
+					original_price: this.orig_price
+				},
 			],
 		}
 	},

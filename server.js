@@ -136,6 +136,24 @@ app.get("/get_items/:limit", (req, res) => {
 	}));
 });
 
+app.get("/get_items_list", (req, res) => {
+	const args = req.params;
+	const query = `SELECT
+		item_id, name, code, qty, orig_price, ret_price
+		FROM tbl_item`;
+
+	DB.query(query)
+	.then(data => {
+		if (data.success)
+			res.json(data);
+		else
+			res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
 app.get("/get_customers", (req, res) => {
 	const args = req.params;
 	const query = `SELECT * FROM tbl_customer`;
