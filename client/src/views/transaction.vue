@@ -14,36 +14,30 @@
 								</p>
 							</b-form-label>
 							<ValidationProvider
-								name="FirstName"
+								name="FullName"
 								rules="required"
 								v-slot="{errors}"
 							>
 								<b-form-input
-									type="text"
-									v-model="form.fname"
+									class="formInput"
+									list="customer-list"
+									v-model="form.fullname"
 									:state="errors[0] ? false : (valid ? true : null)"
-									placeholder="First Name"
+									placeholder="Full Name"
+									@update="autofill_address(form.fullname)"
 								>
 								</b-form-input>
+
 								<b-form-invalid-feedback id="input_feedback">
 									{{ errors[0] }}
 								</b-form-invalid-feedback>
-							</ValidationProvider>
-							<ValidationProvider
-								name="LastName"
-								rules="required"
-								v-slot="{errors}"
-							>
-								<b-form-input
-									type="text"
-									v-model="form.lname"
-									:state="errors[0] ? false : (valid ? true : null)"
-									placeholder="Last Name"
-								>
-								</b-form-input>
-								<b-form-invalid-feedback id="input_feedback">
-									{{ errors[0] }}
-								</b-form-invalid-feedback>
+
+								<datalist id="customer-list">
+									<option v-for="customer in customerNames" :key="customer">
+										{{customer.fullname}}
+									</option>
+								</datalist>
+
 							</ValidationProvider>
 							<ValidationProvider
 								name="Address"
@@ -51,11 +45,33 @@
 								v-slot="{errors}"
 							>
 								<b-form-input
+									class="formInput"
 									type="text"
 									v-model="form.address"
 									:state="errors[0] ? false : (valid ? true : null)"
 									placeholder="Address"
+									:readonly="toggle_readonly"
 								></b-form-input>
+								<b-form-invalid-feedback id="input_feedback">
+									{{ errors[0] }}
+								</b-form-invalid-feedback>
+							</ValidationProvider>
+							<ValidationProvider
+								name="PurchaseMode"
+								rules="required"
+								v-slot="{errors}"
+							>
+								<div class="radioButtons">
+									<label>Purchase Type:</label>
+									<span>
+										<input type="radio" id="online_button" value="online" v-model="form.purchase_mode">
+									</span>
+									<label for="online_button"> Online</label>
+									<span>
+										<input type="radio" id="walkin_button" value="walk-in" v-model="form.purchase_mode">
+									</span>
+									<label for="walkin_button"> Walk-in</label>
+																</div>
 								<b-form-invalid-feedback id="input_feedback">
 									{{ errors[0] }}
 								</b-form-invalid-feedback>
@@ -68,23 +84,14 @@
 						<b-col lg="6" class="my-1">
 
 						<b-form-group>
-							<ValidationProvider
-								name="Address"
-								rules="required"
-								v-slot="{errors}"
-							>
 								<b-input-group size="sm">
 								<b-form-input
-									v-model="form.item_name"
 									placeholder="Search here"
-									list="item-list"
-									@update="on_search_change">
+									v-model="search"
+									@update="on_search_change"
+								>
 								</b-form-input>
 								</b-input-group>
-								<b-form-invalid-feedback id="input_feedback">
-									{{ errors[0] }}
-								</b-form-invalid-feedback>
-							</ValidationProvider>
 
 						</b-form-group>
 
@@ -123,34 +130,24 @@
 						</b-table>
 						<p>
 							Selected Rows: {{selectedRows}}
+							Length: {{selectedRows.length}}
 						</p>
 					</div>
 				</b-tab>
 				<b-tab title="Item Quantity">
 					<div class="formItems">
-						<b-form-group>
-							<ValidationProvider
-								name="PurchaseMode"
-								rules="required"
-								v-slot="{errors}"
-							>
-								<input type="radio" id="online_button" value="online" v-model="form.purchase_mode">
-								<label for="online_button"> Online</label>
-								<br>
-								<input type="radio" id="walkin_button" value="walk-in" v-model="form.purchase_mode">
-								<label for="walkin_button"> Walk-in</label>
-								<b-form-invalid-feedback id="input_feedback">
-									{{ errors[0] }}
-								</b-form-invalid-feedback>
-							</ValidationProvider>
+						<b-form-group v-for="quantity_list in selectedRows" :key="quantity_list">
 							<ValidationProvider
 								name="ItemQuantity"
 								rules="required"
 								v-slot="{errors}"
 							>
+								<b-form-label>
+									{{quantity_list.name}}
+								</b-form-label>
 								<b-form-input
 									type="number"
-									v-model="form.item_quantity"
+									v-model="quantity_list.item_quantity"
 									placeholder="Quantity"
 								></b-form-input>
 								<b-form-invalid-feedback id="input_feedback">
@@ -180,18 +177,25 @@ export default {
 			const data = res.data;
 			this.items = data.results;
 		});
+
+		Axios.get("/get_customers").then(res => {
+			const data2 = res.data;
+			this.customerNames = data2.results;
+		});
+
 	},
 
 	data: function() {
 		return {
+			toggle_readonly: false,
+			search: "",
 			selectMode: 'multiple',
+			selectedRows: [],
 			form: {
-				fname: "",
-				lname: "",
+				fullname: "",
 				address: "",
-				item_name: "",
 				purchase_mode: "",
-				item_quantity: 0,
+				item_details: [],
 			},
 			fields: [
 				{key: "selected", visible: true, label: "Selected"},
@@ -202,7 +206,7 @@ export default {
 				{key: "ret_price", sortable: true, visible: true, label: "Retail Price"},
 			],
 			items: [],
-			selectedRows: [],
+			customerNames: [],
 		}
 	},
 
@@ -219,16 +223,35 @@ export default {
 		},
 
 		on_search_change: function() {
-			if (this.form.item_name.length > 0) this.filter = this.form.item_name;
+			if (this.search.length > 0) this.filter = this.search;
 			else this.filter = null;
 		},
 
 		on_submit: function() {
-			console.dir("Form: " + this.form);
+			for (let i=0; i<this.selectedRows.length; i++){
+				this.form.item_details.push(
+					{item_name: this.selectedRows[i].name, item_quantity: this.selectedRows[i].item_quantity}
+				)
+			}
+			console.log(JSON.stringify(this.form));
+			alert(JSON.stringify(this.form));
 		},
 
 		onRowSelected(items) {
 			this.selectedRows = items;
+		},
+
+		autofill_address: function(customer_name) {
+			for (let i=0; i<this.customerNames.length; i++){
+				if (this.customerNames[i].fullname===customer_name){
+					this.form.address = this.customerNames[i].address
+					this.toggle_readonly = true;
+					break;
+				}
+				else{
+					this.toggle_readonly = false;
+				}
+			}
 		},
 	}
 }
@@ -262,6 +285,14 @@ export default {
 {
 	margin: auto;
 	margin-top: 24px;
+}
+
+.transaction .formItems
+.radioButtons
+{
+	margin-top: 24px;
+	display: flex;
+	justify-content: space-evenly;
 }
 
 .transaction .formItems
