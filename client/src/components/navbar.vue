@@ -4,15 +4,9 @@
 		{{ website_name }}
 	</b-navbar-brand>
 
-
 	<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
 	<b-collapse id="nav-collapse" is-nav>
-		<b-navbar-nav class="add-button">
-			<b-nav-item  to="/transaction">
-				<img class="add-button-img" src="../assets/add.png">
-			</b-nav-item>
-		</b-navbar-nav>
 		<b-navbar-nav class="ml-auto">
 			<b-nav-item
 				v-for="(item, i) in items" :key="i"
@@ -23,15 +17,12 @@
 				{{ item.title }}
 			</b-nav-item>
 
-			<b-nav-item-dropdown right v-if="is_admin">
-				<template #button-content>Add</template>
-				<b-dropdown-item @click="on_add_admin">Add Admin</b-dropdown-item>
-				<b-dropdown-item @click="on_add_terminal">Add Terminal</b-dropdown-item>
-			</b-nav-item-dropdown>
+			<b-nav-item to="/transaction" v-if="signed_in">
+				New Transaction
+			</b-nav-item>
 
 			<b-nav-item-dropdown right>
-				<template #button-content v-if="is_admin">Admin</template>
-				<template #button-content v-else>Account</template>
+				<template #button-content>Account</template>
 
 				<div v-if="signed_in">
 					<b-dropdown-item @click="on_sign_out">Sign Out</b-dropdown-item>
@@ -61,14 +52,16 @@ export default {
 	},
 
 	mounted: function() {
-		const email = sessionStorage["email"];
-		const is_admin = sessionStorage["is_admin"];
-
-		if (email) this.signed_in = true;
-		if (is_admin) this.is_admin = true;
+		this.check_signed_in();
 	},
 
 	methods: {
+		check_signed_in: function() {
+			const email = sessionStorage["email"];
+
+			if (email) this.signed_in = true;
+		},
+
 		on_sign_out: function() {
 			if (window.confirm("Are you sure you want to sign out?"))
 			{
@@ -90,23 +83,23 @@ export default {
 		},
 	},
 
+	updated: function() {
+		this.$nextTick(function() {
+			this.check_signed_in();
+		});
+	},
+
 	data: function() {
 		return {
 			home: "/",
 			href_sign_in: "/sign_in",
 			href_sign_up: "/registration",
 			signed_in: false,
-			is_admin: false,
 			items: [
 				{
 					route: "#home",
 					route2: "/",
 					title: "Home",
-				},
-				{
-					route: "#profile",
-					route2: "/profile",
-					title: "Profile",
 				},
 			],
 		}
@@ -123,13 +116,5 @@ export default {
 	font-weight: bold;
 	margin-left: 8px;
 	margin-right: 8px;
-}
-
-.add-button{
-	width: 5%;
-}
-
-.add-button-img{
-	width: 100%;
 }
 </style>

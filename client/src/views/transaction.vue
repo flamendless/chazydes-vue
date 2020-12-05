@@ -3,16 +3,17 @@
 
 	<ValidationObserver ref="observer" v-slot="{handleSubmit}">
 		<b-form @submit.prevent="handleSubmit(on_submit)">
-			<input type="submit" class="btn btn-primary mt-3" text="Submit">
+
+			<input :disabled="can_submit == false" type="submit" class="btn_submit btn btn-primary mt-3" text="Submit">
+
 			<b-tabs content-class="mt-3">
 				<b-tab title="Customer Profile" active>
 					<div class="formItems">
 						<b-form-group class="formGroup1" label-for="input-2">
-							<b-form-label>
-								<p class="formTitle1">
-									Customer Profile
-								</p>
-							</b-form-label>
+							<p class="formTitle">
+								Customer Profile
+							</p>
+
 							<ValidationProvider
 								name="FullName"
 								rules="required"
@@ -63,14 +64,16 @@
 							>
 								<div class="radioButtons">
 									<label>Purchase Type:</label>
+
 									<span>
 										<input type="radio" id="online_button" value="online" v-model="form.purchase_mode">
+										<label class="radio_input" for="online_button">Online</label>
 									</span>
-									<label for="online_button"> Online</label>
+
 									<span>
 										<input type="radio" id="walkin_button" value="walk-in" v-model="form.purchase_mode">
+										<label class="radio_input" for="walkin_button">Walk-in</label>
 									</span>
-									<label for="walkin_button"> Walk-in</label>
 								</div>
 								<b-form-invalid-feedback id="input_feedback">
 									{{ errors[0] }}
@@ -79,39 +82,43 @@
 						</b-form-group>
 					</div>
 				</b-tab>
-				<b-tab title="Item Information">
+
+				<b-tab title="Item">
 					<div>
-						<b-col lg="6" class="my-1">
+						<b-row>
+							<b-col lg="6" class="my-1">
+								<b-form-group>
+										<b-input-group size="sm">
+										<b-form-input
+											placeholder="Search here"
+											v-model="search"
+											@update="on_search_change"
+										>
+										</b-form-input>
+										</b-input-group>
+								</b-form-group>
+							</b-col>
 
-						<b-form-group>
-								<b-input-group size="sm">
-								<b-form-input
-									placeholder="Search here"
-									v-model="search"
-									@update="on_search_change"
-								>
-								</b-form-input>
-								</b-input-group>
+							<b-col lg="6" class="my-1">
+								<b-form-group>
+									<b-dropdown right text="views" size="sm">
+										<b-dropdown-form v-for="field in fields" :key="field.id">
+											<b-form-checkbox :disabled="visible_fields.length == 1 && field.visible"
+												v-model="field.visible">
+												{{ field.label }}
+											</b-form-checkbox>
+										</b-dropdown-form>
+									</b-dropdown>
+									<br>
+								</b-form-group>
+							</b-col>
+						</b-row>
 
-						</b-form-group>
-
-						<b-form-group>
-						<b-dropdown right text="views">
-							<b-dropdown-form v-for="field in fields" :key="field.id">
-								<b-form-checkbox :disabled="visible_fields.length == 1 && field.visible"
-									v-model="field.visible">
-									{{ field.label }}
-								</b-form-checkbox>
-							</b-dropdown-form>
-						</b-dropdown>
-						<br>
-						</b-form-group>
-						</b-col>
 						<b-table
 							hover
 							striped
 							selectable
-							select-mode="multiple"
+							multiple
 							@row-selected="onRowSelected"
 							:items="items"
 							:filter="filter"
@@ -128,14 +135,17 @@
 							</template>
 						</template>
 						</b-table>
-						<p>
-							Selected Rows: {{selected_rows}}
-							Length: {{selected_rows.length}}
-						</p>
 					</div>
 				</b-tab>
+
 				<b-tab title="Item Quantity">
 					<div class="formItems">
+						<div v-if="selected_rows.length == 0">
+							<p class="formTitle">
+								Please select an item in the Item tab
+							</p>
+						</div>
+
 						<b-form-group v-for="quantity_list in selected_rows" :key="quantity_list">
 							<ValidationProvider
 								name="ItemQuantity"
@@ -187,8 +197,11 @@ export default {
 
 	data: function() {
 		return {
+			can_submit: false,
 			toggle_readonly: false,
 			search: "",
+			filter: null,
+			valid: false,
 			selected_rows: [],
 			form: {
 				fullname: "",
@@ -255,43 +268,47 @@ export default {
 <style lang="scss" scoped>
 .transaction
 {
-	width: 65%;
+	width: 80%;
 	display: block;
 	margin: auto;
 	margin-top: 24px;
-}
 
-.transaction .submitButton
-{
-	display: block;
-	margin-left: auto;
-}
-.transaction .formItems
-.formTitle1
-{
-	font-weight: bold;
-	text-align: center;
-}
+	.btn_submit
+	{
+		display: block;
+		margin-left: auto;
+	}
 
-.transaction .formItems
-.formInput
-{
-	margin: auto;
-	margin-top: 24px;
-}
+	.formItems
+	{
+		width: 50%;
+		display: block;
+		margin: auto;
 
-.transaction .formItems
-.radioButtons
-{
-	margin-top: 24px;
-	display: flex;
-	justify-content: space-evenly;
-}
+		.formTitle
+		{
+			font-weight: bold;
+			text-align: center;
+		}
 
-.transaction .formItems
-{
-	width: 50%;
-	display: block;
-	margin: auto;
+		.formInput
+		{
+			margin: auto;
+			margin-top: 24px;
+		}
+
+		.radioButtons
+		{
+			margin-top: 24px;
+			display: flex;
+			justify-content: space-evenly;
+
+			.radio_input
+			{
+				margin-left: 8px;
+				margin-right: 8px;
+			}
+		}
+	}
 }
 </style>

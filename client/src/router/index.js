@@ -34,7 +34,7 @@ const routes = [
 		component: Transaction,
 	},
 	{
-		path: "/dashboard/:item",
+		path: "/item",
 		name: "Item",
 		component: Item,
 		props: true

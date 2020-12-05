@@ -4,38 +4,26 @@
 		justified
 		v-model="tab"
 		@activate-tab="on_tab_activated">
-		<!-- <b&#45;tab title="Driver" lazy> -->
-		<!-- 	<TableDrivers :is_admin="is_admin" /> -->
-		<!-- </b&#45;tab> -->
 	</b-tabs>
 	<div>
-		<b-card-group deck class="dashboard_gallery" v-for="i in (items.length / items_per_row)" :key="'item' + i">
-			<b-card class="gallery-item" v-for="j in items_per_row" :key="'card' + j">
-				<b-link
-					:to="{
-						name: 'Item',
-						path: '/dashboard/' + items[index(i,j)].code,
-						params: {
-							name: items[index(i,j)].name,
-							code: items[index(i,j)].code,
-							qty: items[index(i,j)].qty,
-							orig_price: items[index(i,j)].orig_price,
-							ret_price: items[index(i,j)].ret_price,
-						},
-					}"
-				>
-
+		<b-card-group deck class="gallery" v-for="i in (items.length / items_per_row)" :key="'item' + i">
+			<b-card class="gallery-item" v-for="j in items_per_row" :key="'card' + j"
+				@click="item_on_click(items[index(i, j)])">
 				<b-card-img class="item-image" src="../uploads/goblet.png" />
 				<b-card-title class="card-title">{{items[index(i,j)].name}}</b-card-title>
 				<b-card-text><b>Code: </b>{{items[index(i,j)].code}}</b-card-text>
 				<b-card-footer>
-					<b-badge variant="primary">Quantity: {{items[index(i,j)].qty}}</b-badge>
-					<b-badge variant="info">Original Price: <span>&#8369;</span>{{items[index(i,j)].orig_price}}</b-badge>
-					<b-badge variant="success">Retail Price: <span>&#8369;</span>{{items[index(i,j)].ret_price}}</b-badge>
+					<b-badge :variant="get_qty_variant(items[index(i, j)])">
+						Qty: {{items[index(i,j)].qty}}
+					</b-badge>
+					<b-badge variant="info">
+						Orig. Price: <span>&#8369;</span>{{items[index(i,j)].orig_price}}
+					</b-badge>
+					<b-badge variant="success">
+						Ret. Price: <span>&#8369;</span>{{items[index(i,j)].ret_price}}
+					</b-badge>
 				</b-card-footer>
-				</b-link>
 			</b-card>
-			<br />
 		</b-card-group>
 	</div>
 </div>
@@ -46,8 +34,13 @@ const Axios = require("axios");
 
 export default {
 	name: "Dashboard",
-	components: {
 
+	created: function() {
+		window.addEventListener("resize", this.resize);
+	},
+
+	destroyed: function() {
+		window.removeEventListener("resize", this.resize);
 	},
 
 	mounted: function() {
@@ -66,14 +59,41 @@ export default {
 		Axios.get("/get_items/10").then(res => {
 			const data = res.data;
 			this.items = data.results;
-			console.log("Item Length: " + data.results.length)
-			this.items.forEach(function(item) {
-				console.log("Name: " + item.name)
-			})
+			// console.log("Item Length: " + data.results.length)
+			// this.items.forEach(function(item) {
+			// 	console.log("Name: " + item.name)
+			// })
 		});
+
+		this.$nextTick(function () {
+			console.log(this.$el.clientWidth);
+		})
 	},
 
 	methods: {
+		resize: function() {
+
+		},
+		item_on_click: function(item) {
+			this.$router.push({
+				name: "Item",
+				params: {
+					name: item.name,
+					code: item.code,
+					qty: item.qty,
+					orig_price: item.orig_price,
+					ret_price: item.ret_price,
+				}
+			});
+		},
+
+		get_qty_variant: function(item) {
+			const qty = item.qty;
+			if (qty == 0) return "danger";
+			else if (qty < 10) return "warning";
+			else return "primary";
+		},
+
 		on_tab_activated: function(next) {
 			const url = new URL(window.location.href);
 			const sp = url.searchParams;
@@ -84,7 +104,6 @@ export default {
 		},
 
 		index: function(i, j){
-			this.items_per_row = 5;
 			return (this.items_per_row * (i-1) + (j-1));
 		}
 	},
@@ -104,32 +123,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dashboard {
-	padding: 16px;
-}
-
-.dashboard .dashboard_gallery
-{
-	margin: 16px;
-}
-
-.dashboard .dashboard_gallery .gallery-item
+.dashboard
 {
 	padding: 16px;
-	box-shadow: 0 0 8px grey;
+
+	.gallery
+	{
+		margin: 16px;
+
+		.gallery-item
+		{
+			box-shadow: 0 0 8px grey;
+
+			.item-image
+			{
+				padding: 8px;
+				box-shadow: 0 0 4px grey;
+			}
+
+			.card-title
+			{
+				padding-top: 12px;
+				padding-bottom: 12px;
+				text-align: center;
+			}
+
+			.card-footer
+			{
+				border: none;
+				padding: 0;
+				background-color: white;
+
+				.badge
+				{
+					margin-left: 4px;
+					margin-right: 4px;
+				}
+			}
+		}
+	}
 }
 
-.dashboard .dashboard_gallery
-.gallery-item .item-image
-{
-	padding: 8px;
-	box-shadow: 0 0 4px grey;
-}
-
-.dashboard .dashboard_gallery
-.gallery-item .card-title
-{
-	padding: 16px;
-	text-align: center;
-}
 </style>
