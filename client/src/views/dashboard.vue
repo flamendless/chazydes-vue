@@ -6,21 +6,30 @@
 		@activate-tab="on_tab_activated">
 	</b-tabs>
 	<div>
-		<b-card-group deck class="gallery" v-for="i in (items.length / items_per_row)" :key="'item' + i">
-			<b-card class="gallery-item" v-for="j in items_per_row" :key="'card' + j"
-				@click="item_on_click(items[index(i, j)])">
+		<b-card-group deck class="gallery"
+			v-for="i in (items.length / items_per_row)" :key="'item' + i">
+			<b-card class="gallery-item"
+				v-for="j in items_per_row" :key="'card' + j"
+				@click="item_on_click(i, j)">
+
 				<b-card-img class="item-image" src="../uploads/goblet.png" />
-				<b-card-title class="card-title">{{items[index(i,j)].name}}</b-card-title>
-				<b-card-text><b>Code: </b>{{items[index(i,j)].code}}</b-card-text>
+				<b-card-title class="card-title">
+					{{get_item(i, j).name}}
+				</b-card-title>
+				<b-card-text><b>Code: </b>
+					{{get_item(i, j).code}}
+				</b-card-text>
 				<b-card-footer>
 					<b-badge :variant="get_qty_variant(items[index(i, j)])">
-						Qty: {{items[index(i,j)].qty}}
+						Qty: {{get_item(i, j).qty}}
 					</b-badge>
 					<b-badge variant="info">
-						Orig. Price: <span>&#8369;</span>{{items[index(i,j)].orig_price}}
+						Orig. Price: <span>&#8369;</span>
+						{{get_item(i, j).orig_price}}
 					</b-badge>
 					<b-badge variant="success">
-						Ret. Price: <span>&#8369;</span>{{items[index(i,j)].ret_price}}
+						Ret. Price: <span>&#8369;</span>
+						{{get_item(i, j).ret_price}}
 					</b-badge>
 				</b-card-footer>
 			</b-card>
@@ -66,25 +75,55 @@ export default {
 		});
 
 		this.$nextTick(function () {
-			console.log(this.$el.clientWidth);
+			this.width = window.innerWidth;
 		})
 	},
 
-	methods: {
-		resize: function() {
+	watch: {
+		width: function(new_width){
+			if (new_width > 900) this.items_per_row = 5;
+			else if (new_width > 640) this.items_per_row = 4;
+		}
+	},
 
+	methods: {
+		resize: function(e) {
+			const w = e.currentTarget.innerWidth;
+			this.width = w;
 		},
-		item_on_click: function(item) {
-			this.$router.push({
-				name: "Item",
-				params: {
-					name: item.name,
-					code: item.code,
-					qty: item.qty,
-					orig_price: item.orig_price,
-					ret_price: item.ret_price,
-				}
-			});
+
+		get_item: function(i, j) {
+			const idx = this.index(i, j);
+
+			if (idx < this.items.length) {
+				return this.items[idx];
+			} else
+				return {
+					name: "",
+					code: "",
+					qty: "",
+					orig_price: "",
+					ret_price: "",
+				};
+		},
+
+		item_on_click: function(i, j) {
+			const idx = this.index(i, j);
+
+			if (idx < this.items.length) {
+				const item = this.items[idx];
+
+				this.$router.push({
+					name: "Item",
+					params: {
+						name: item.name,
+						code: item.code,
+						qty: item.qty,
+						orig_price: item.orig_price,
+						ret_price: item.ret_price,
+					}
+				});
+			}
 		},
 
 		get_qty_variant: function(item) {
@@ -110,6 +149,7 @@ export default {
 
 	data: function() {
 		return {
+			width: 0,
 			is_admin: false,
 			signed_in: false,
 			email: null,

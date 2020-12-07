@@ -34,7 +34,8 @@
 								</b-form-invalid-feedback>
 
 								<datalist id="customer-list">
-									<option v-for="customer in customer_names" :key="customer">
+									<option v-for="customer in customer_names"
+										:key="customer.id">
 										{{customer.fullname}}
 									</option>
 								</datalist>
@@ -119,26 +120,20 @@
 							striped
 							selectable
 							multiple
-							@row-selected="onRowSelected"
+							@row-clicked="on_row_clicked"
 							:items="items"
 							:filter="filter"
 							:fields="visible_fields"
 						>
-						<template #cell(selected)="{ rowSelected }">
-							<template v-if="rowSelected">
-								<span aria-hidden="true">&check;</span>
-								<span class="sr-only">Selected</span>
+							<template #cell(selected)="data">
+								<b-icon-check v-if="data.value">
+								</b-icon-check>
 							</template>
-							<template v-else>
-								<span aria-hidden="true">&nbsp;</span>
-								<span class="sr-only">Not selected</span>
-							</template>
-						</template>
 						</b-table>
 					</div>
 				</b-tab>
 
-				<b-tab title="Item Quantity">
+				<b-tab title="Quantity and Price">
 					<div class="formItems">
 						<div v-if="selected_rows.length == 0">
 							<p class="formTitle">
@@ -146,24 +141,46 @@
 							</p>
 						</div>
 
-						<b-form-group v-for="quantity_list in selected_rows" :key="quantity_list">
+						<b-form-group v-for="item in selected_rows"
+							:key="item.index">
 							<ValidationProvider
 								name="ItemQuantity"
 								rules="required"
 								v-slot="{errors}"
 							>
-								<b-form-label>
-									{{quantity_list.name}}
-								</b-form-label>
+								<p>
+									{{item.name}}
+								</p>
+
 								<b-form-input
 									type="number"
-									v-model="quantity_list.item_quantity"
+									v-model="item.item_quantity"
 									placeholder="Quantity"
 								></b-form-input>
+
+								<h5>
+									<b-badge class="item_badge" variant="primary">
+										&#8369;
+										{{item.ret_price}}
+									</b-badge>
+									x
+									<b-badge class="item_badge" variant="info">
+										{{item.item_quantity || 0}}
+									</b-badge>
+									=
+									<b-badge class="item_badge" variant="success">
+										&#8369;
+										{{item.ret_price *
+										(item.item_quantity || 0)}}
+									</b-badge>
+								</h5>
+
 								<b-form-invalid-feedback id="input_feedback">
 									{{ errors[0] }}
 								</b-form-invalid-feedback>
 							</ValidationProvider>
+
+							<hr>
 						</b-form-group>
 					</div>
 				</b-tab>
@@ -234,8 +251,23 @@ export default {
 			else this.filter = null;
 		},
 
-		onRowSelected(items) {
-			this.selected_rows = items;
+		on_row_clicked(item) {
+			let found = false;
+			for (let i = 0; i < this.selected_rows.length; i++) {
+				const e = this.selected_rows[i];
+
+				if (e == item) {
+					item.selected = false;
+					this.selected_rows.splice(i, 1);
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				item.selected = true;
+				this.selected_rows.push(item);
+			}
 		},
 
 		autofill_address: function(customer_name) {
@@ -309,6 +341,12 @@ export default {
 				margin-right: 8px;
 			}
 		}
+	}
+
+	.item_badge
+	{
+		margin: 12px;
+		padding: 8px;
 	}
 }
 </style>

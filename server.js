@@ -70,13 +70,16 @@ app.post("/register_user", (req, res) => {
 
 app.post("/sign_in", (req, res) => {
 	const args = req.body;
-	const query = `SELECT pw_hash FROM tbl_user WHERE email = ?`;
+	const query = `SELECT email, pw_hash FROM tbl_user WHERE email = ?`;
 
 	DB.query(query, [args.email])
 	.then(data => {
 		if (data.success && data.results.length > 0) {
 			const match = bcrypt.compareSync(args.password, data.results[0].pw_hash);
-			res.json(data);
+			res.json({
+				email: data.results[0].email,
+				success: match,
+			});
 		} else res.json({success: false});
 	}).catch(err => res.json({
 		success: false,

@@ -14,7 +14,7 @@
 				:title="item.title"
 				:active="current_route == item.route || current_route == item.route2"
 			>
-				{{ item.title }}
+				{{ signed_in ? item.title2 : item.title }}
 			</b-nav-item>
 
 			<b-nav-item to="/transaction" v-if="signed_in">
@@ -53,6 +53,17 @@ export default {
 
 	mounted: function() {
 		this.check_signed_in();
+	},
+
+	watch: {
+		$route(to) {
+			if (to.hash == "#home") {
+				if (this.signed_in == false)
+					this.$router.push({name: "Home"});
+				else
+					this.$router.push({name: "Dashboard"});
+			}
+		}
 	},
 
 	methods: {
@@ -100,6 +111,7 @@ export default {
 					route: "#home",
 					route2: "/",
 					title: "Home",
+					title2: "Dashboard",
 				},
 			],
 		}

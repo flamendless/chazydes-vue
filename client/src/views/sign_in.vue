@@ -95,9 +95,8 @@ export default {
 				password: this.form.password,
 			}).then(res => {
 				const data = res.data;
-				if (data.success && data.results != null && data.results.length > 0)
+				if (data.success && data.email)
 				{
-					const res = data.results[0];
 					this.loading = false;
 
 					sessionStorage["email"] = data.email;
