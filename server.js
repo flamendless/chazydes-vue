@@ -87,22 +87,6 @@ app.post("/sign_in", (req, res) => {
 	}));
 });
 
-app.get("/validate_email/:email", (req, res) => {
-	const args = req.params;
-	const query = `SELECT email FROM tbl_user WHERE email = ?`
-
-	DB.query(query, [args.email])
-	.then(data => {
-		if (data.success)
-			res.json(data);
-		else
-			res.json({success: false});
-	}).catch(err => res.json({
-		success: false,
-		err: err,
-	}));
-});
-
 app.post("/get_profile", (req, res) => {
 	const args = req.body;
 	const query = `SELECT fname, mname, lname, birthdate
