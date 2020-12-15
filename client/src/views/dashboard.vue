@@ -144,7 +144,7 @@ export default {
 
 		index: function(i, j){
 			return (this.items_per_row * (i-1) + (j-1));
-		}
+		},
 	},
 
 	data: function() {

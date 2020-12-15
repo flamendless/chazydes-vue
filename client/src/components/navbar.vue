@@ -20,6 +20,9 @@
 			<b-nav-item to="/transaction" v-if="signed_in">
 				New Transaction
 			</b-nav-item>
+			<b-nav-item to="/add_item" v-if="signed_in">
+				Add Item
+			</b-nav-item>
 
 			<b-nav-item-dropdown right>
 				<template #button-content>Account</template>
