@@ -122,7 +122,7 @@
 
 						<datalist id="supplier-list">
 							<option v-for="supplier in supplier_list"
-								:key="supplier.name">
+								:key="supplier.supplier_id">
 								{{supplier.name}}
 							</option>
 						</datalist>
@@ -143,9 +143,17 @@
 </template>
 
 <script>
+const Axios = require("axios");
 
 export default {
 	name: "AddItem",
+
+	mounted: function() {
+		Axios.get("/get_suppliers").then(res => {
+			const data = res.data;
+			this.supplier_list = data.results;
+		});
+	},
 
 	data: function() {
 		return {
@@ -157,7 +165,7 @@ export default {
 				supplier_name: "",
 			},
 			valid: false,
-			supplier_list: [{supplier_id: 1, name: "KitchenWareHouse"}],
+			supplier_list: [],
 		}
 	},
 
