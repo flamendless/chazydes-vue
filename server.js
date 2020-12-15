@@ -157,7 +157,7 @@ app.get("/get_customers", (req, res) => {
 
 app.get("/get_suppliers", (req, res) => {
 	const args = req.params;
-	const query = `SELECT * FROM tbl_suppliers`;
+	const query = `SELECT * FROM tbl_supplier`;
 
 	DB.query(query)
 	.then(data => {

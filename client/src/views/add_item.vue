@@ -135,7 +135,11 @@
 					</div>
 				</b-form-group>
 
-				<input type="submit" class="btn_submit btn btn-primary mt-3" text="Submit">
+				<b-row>
+					<b-col class="text-center">
+						<input type="submit" class="btn btn-primary mt-3" text="Submit">
+					</b-col>
+				</b-row>
 			</div>
 		</b-form>
 	</ValidationObserver>
@@ -181,10 +185,10 @@ export default {
 <style lang="scss" scoped>
 .add_item
 {
+	padding: 32px;
 	width: 80%;
 	display: block;
 	margin: auto;
-	margin-top: 24px;
 
 	.formItems
 	{
