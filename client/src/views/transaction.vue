@@ -159,6 +159,7 @@
 									v-model="item.item_quantity"
 									placeholder="Quantity"
 									min="0"
+									@update="on_update_qty(item)"
 								></b-form-input>
 
 								<h5>
@@ -240,7 +241,7 @@ export default {
 			],
 			items: [],
 			customer_names: [],
-
+			total_price: 0,
 		}
 	},
 
@@ -248,16 +249,13 @@ export default {
 		visible_fields: function() {
 			return this.fields.filter(field => field.visible);
 		},
+	},
 
-		total_price: function() {
-			let sum = 0;
-
-			this.selected_rows.forEach(e => {
-				sum += e.ret_price * e.item_quantity;
-				console.log(sum);
-			});
-			return sum;
-		},
+	watch: {
+		selected_rows: {
+			handler: function() { this.calculate_total_price(); },
+			deep: true,
+		}
 	},
 
 	methods: {
@@ -285,6 +283,18 @@ export default {
 				item.selected = true;
 				this.selected_rows.push(item);
 			}
+		},
+
+		calculate_total_price: function() {
+			let sum = 0;
+			this.selected_rows.forEach(e => {
+				sum += e.ret_price * e.item_quantity;
+			});
+			this.total_price = sum;
+		},
+
+		on_update_qty: function() {
+			this.calculate_total_price();
 		},
 
 		autofill_address: function(customer_name) {

@@ -14,6 +14,7 @@ class Database
 			// database: "chazydes",
 
 			//ETO SAKIN PLEASE WAG MONG IDELETE, ICOMMENT MO LANG
+			database: "chazydes",
 			password: "",
 			socketPath: "/opt/lampp/var/mysql/mysql.sock",
 		});
