@@ -4,6 +4,7 @@ import Home from "../views/home.vue"
 import Dashboard from "../views/dashboard.vue"
 import Transaction from "../views/transaction.vue"
 import Item from "../views/item.vue"
+import Add_Item from "../views/add_item.vue"
 
 Vue.use(VueRouter);
 
@@ -37,6 +38,12 @@ const routes = [
 		path: "/item",
 		name: "Item",
 		component: Item,
+		props: true
+	},
+	{
+		path: "/add_item",
+		name: "AddItem",
+		component: Add_Item,
 		props: true
 	},
 ]

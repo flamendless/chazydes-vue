@@ -130,6 +130,8 @@
 								</b-icon-check>
 							</template>
 						</b-table>
+
+						{{selected_rows}}
 					</div>
 				</b-tab>
 
@@ -142,7 +144,7 @@
 						</div>
 
 						<b-form-group v-for="item in selected_rows"
-							:key="item.index">
+							:key="item.index" >
 							<ValidationProvider
 								name="ItemQuantity"
 								rules="required"
@@ -156,6 +158,7 @@
 									type="number"
 									v-model="item.item_quantity"
 									placeholder="Quantity"
+									min="0"
 								></b-form-input>
 
 								<h5>
@@ -182,6 +185,7 @@
 
 							<hr>
 						</b-form-group>
+						{{total_price}}
 					</div>
 				</b-tab>
 			</b-tabs>
@@ -236,13 +240,24 @@ export default {
 			],
 			items: [],
 			customer_names: [],
+
 		}
 	},
 
 	computed: {
 		visible_fields: function() {
 			return this.fields.filter(field => field.visible);
-		}
+		},
+
+		total_price: function() {
+			let sum = 0;
+
+			this.selected_rows.forEach(e => {
+				sum += e.ret_price * e.item_quantity;
+				console.log(sum);
+			});
+			return sum;
+		},
 	},
 
 	methods: {
@@ -254,6 +269,7 @@ export default {
 		on_row_clicked(item) {
 			let found = false;
 			for (let i = 0; i < this.selected_rows.length; i++) {
+
 				const e = this.selected_rows[i];
 
 				if (e == item) {
@@ -265,6 +281,7 @@ export default {
 			}
 
 			if (!found) {
+				item.item_quantity = null;
 				item.selected = true;
 				this.selected_rows.push(item);
 			}
@@ -290,8 +307,6 @@ export default {
 					item_quantity: this.selected_rows[i].item_quantity
 				});
 			}
-
-			console.log(JSON.stringify(this.form));
 		},
 	}
 }

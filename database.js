@@ -8,9 +8,8 @@ class Database
 		this.db = MySQL.createConnection({
 			host: "localhost",
 			user: "root",
-			password: "",
+			password: "useruser",
 			database: "chazydes",
-			socketPath: "/opt/lampp/var/mysql/mysql.sock",
 
 			// password: "useruser",
 			// database: "chazydes",
