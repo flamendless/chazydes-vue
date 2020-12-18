@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 28, 2020 at 12:15 PM
+-- Generation Time: Dec 18, 2020 at 03:23 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -41,7 +41,8 @@ CREATE TABLE `tbl_account` (
 --
 
 INSERT INTO `tbl_account` (`account_id`, `fname`, `mname`, `lname`, `birthdate`) VALUES
-(1, 'Brandon', 'Blanker', 'Lim-it', '2020-11-02');
+(1, 'Brandon', 'Blanker', 'Lim-it', '2020-11-02'),
+(2, 'FirstName', 'MiddleName', 'LastName', '2020-12-01');
 
 -- --------------------------------------------------------
 
@@ -102,12 +103,40 @@ INSERT INTO `tbl_item` (`item_id`, `name`, `code`, `qty`, `orig_price`, `ret_pri
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_item_sold`
+--
+
+CREATE TABLE `tbl_item_sold` (
+  `item_sold_id` int(11) NOT NULL,
+  `item_id` int(11) DEFAULT NULL,
+  `qty_sold` int(11) DEFAULT NULL,
+  `total_price` decimal(13,2) DEFAULT NULL,
+  `profit` decimal(13,3) DEFAULT NULL,
+  `transaction_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_supplier`
 --
 
 CREATE TABLE `tbl_supplier` (
   `supplier_id` int(11) NOT NULL,
   `name` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_transaction`
+--
+
+CREATE TABLE `tbl_transaction` (
+  `transaction_id` int(11) NOT NULL,
+  `transaction_dt` datetime DEFAULT NULL,
+  `type` enum('walk_in','online') DEFAULT NULL,
+  `customer_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -127,7 +156,8 @@ CREATE TABLE `tbl_user` (
 --
 
 INSERT INTO `tbl_user` (`user_id`, `email`, `pw_hash`) VALUES
-(1, 'test@gmail.com', '$2a$08$3ZNr4HMdZm5ydg.YVs.QBOej9pzXdkxpIjq/R7UUfh.sk6865jQGi');
+(1, 'admin@gmail.com', '$2a$08$3ZNr4HMdZm5ydg.YVs.QBOej9pzXdkxpIjq/R7UUfh.sk6865jQGi'),
+(2, 'user@gmail.com', '$2a$08$nbjlCrkYh6Sa6PZT/VUxXeifkzYrA4NdOYrSl32p/e0f9kzj23CVm');
 
 --
 -- Indexes for dumped tables
@@ -158,10 +188,22 @@ ALTER TABLE `tbl_item`
   ADD PRIMARY KEY (`item_id`);
 
 --
+-- Indexes for table `tbl_item_sold`
+--
+ALTER TABLE `tbl_item_sold`
+  ADD PRIMARY KEY (`item_sold_id`);
+
+--
 -- Indexes for table `tbl_supplier`
 --
 ALTER TABLE `tbl_supplier`
   ADD PRIMARY KEY (`supplier_id`);
+
+--
+-- Indexes for table `tbl_transaction`
+--
+ALTER TABLE `tbl_transaction`
+  ADD PRIMARY KEY (`transaction_id`);
 
 --
 -- Indexes for table `tbl_user`
@@ -177,7 +219,7 @@ ALTER TABLE `tbl_user`
 -- AUTO_INCREMENT for table `tbl_account`
 --
 ALTER TABLE `tbl_account`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_customer`
@@ -198,16 +240,28 @@ ALTER TABLE `tbl_item`
   MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT for table `tbl_item_sold`
+--
+ALTER TABLE `tbl_item_sold`
+  MODIFY `item_sold_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tbl_supplier`
 --
 ALTER TABLE `tbl_supplier`
   MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tbl_transaction`
+--
+ALTER TABLE `tbl_transaction`
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
