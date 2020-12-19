@@ -138,7 +138,7 @@
 				<b-tab title="Quantity and Price">
 					<div class="totalSection">
 						<h4>
-							<b-badge class="total_badge" variant="secondary">
+							<b-badge class="total_badge" variant="success">
 								Total:
 								&#8369;
 								{{total_price}}
