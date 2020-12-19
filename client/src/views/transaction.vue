@@ -346,7 +346,8 @@ export default {
 	.totalSection
 	{
 		position: sticky;
-		top: 0;
+		top: 100px;
+		z-index: 1020;
 
 		.total_badge
 		{
