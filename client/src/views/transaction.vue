@@ -136,13 +136,21 @@
 				</b-tab>
 
 				<b-tab title="Quantity and Price">
+					<div class="totalSection">
+						<h4>
+							<b-badge class="total_badge" variant="secondary">
+								Total:
+								&#8369;
+								{{total_price}}
+							</b-badge>
+						</h4>
+					</div>
 					<div class="formItems">
 						<div v-if="selected_rows.length == 0">
 							<p class="formTitle">
 								Please select an item in the Item tab
 							</p>
 						</div>
-
 						<b-form-group v-for="item in selected_rows"
 							:key="item.index" >
 							<ValidationProvider
@@ -159,7 +167,7 @@
 									v-model="item.item_quantity"
 									placeholder="Quantity"
 									min="0"
-									@update="on_update_qty(item)"
+									@update="calculate_total_price"
 								></b-form-input>
 
 								<h5>
@@ -186,7 +194,6 @@
 
 							<hr>
 						</b-form-group>
-						{{total_price}}
 					</div>
 				</b-tab>
 			</b-tabs>
@@ -336,6 +343,19 @@ export default {
 		margin-left: auto;
 	}
 
+	.totalSection
+	{
+		position: sticky;
+		top: 0;
+
+		.total_badge
+		{
+			width: 20%;
+			display: block;
+			margin-left: auto;
+		}
+	}
+
 	.formItems
 	{
 		width: 50%;
@@ -366,12 +386,12 @@ export default {
 				margin-right: 8px;
 			}
 		}
-	}
 
-	.item_badge
-	{
-		margin: 12px;
-		padding: 8px;
+		.item_badge
+		{
+			margin: 12px;
+			padding: 8px;
+		}
 	}
 }
 </style>
