@@ -1,42 +1,27 @@
 <template>
 <div class="view_transaction">
-	<b-table
-		hover
-		striped
-		selectable
-		multiple
-		@row-clicked="on_row_clicked"
-		:items="transactions"
-		:filter="filter"
-		:fields="visible_fields"
-	>
-		<template #cell(selected)="data">
-			<b-icon-check v-if="data.value">
-			</b-icon-check>
-		</template>
-	</b-table>
+	<b-card class="tableSection" style="font-size: 1.25rem;">
+		<b-table bordered stacked :items="transaction_details" :fields="fields">
+
+		</b-table>
+	</b-card>
 </div>
 </template>
 
 <script>
-
 export default {
 	name: "ViewTransaction",
+	props: {
+	},
 
 	mounted: function() {
+		alert(JSON.stringify(this.$route.query));
+
 	},
 
 	data: function() {
 		return {
-			fields: [
-				{key: "transaction_id", visible: true, label: "Transaction ID"},
-				{key: "transaction_dt", sortable: true, visible: true, label: "Date and Time"},
-				{key: "transaction_type", sortable: true, visible: true, label: "Type"},
-				{key: "customer_name", sortable: true, visible: true, label: "Customer Name"},
-				{key: "items", sortable: true, visible: true, label: "Items"},
-			],
-			filter: null,
-			transactions: [
+			transaction_details: [
 				{
 					transaction_id: 1,
 					transaction_dt: "January 1, 2021 / 1:00 PM",
@@ -52,25 +37,34 @@ export default {
 						}
 					],
 				}
-			]
+			],
+			fields: [
+				{key: "transaction_id", label: "Transaction ID", class: 'text-center', variant: "info",},
+				{key: "transaction_dt", label: "Date and Time", class: 'text-center'},
+				{key: "transaction_type", label: "Type", class: 'text-center', variant: "info",},
+				{key: "customer_name", label: "Customer Name", class: 'text-center'},
+			],
 		}
-	},
-
-	computed: {
-		visible_fields: function() {
-			return this.fields.filter(field => field.visible);
-		},
 	},
 }
 </script>
 
-
 <style lang="scss" scoped>
 .view_transaction
 {
-	width: 80%;
+	width: 70%;
 	display: block;
 	margin: auto;
-	margin-top: 24px;
+	padding: 50px;
+
+	.tableSection
+	{
+		box-shadow: 0 0 2px grey;
+
+		.itemText
+		{
+			text-align: center;
+		}
+	}
 }
 </style>

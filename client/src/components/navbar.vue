@@ -19,12 +19,12 @@
 			<b-nav-item-dropdown>
 				<template #button-content>Transaction</template>
 
-				<b-dropdown-item to="/transaction">
+				<b-dropdown-item to="/add_transaction">
 					Add Transaction
 				</b-dropdown-item>
 
-				<b-dropdown-item to="/view_transaction">
-					View Transaction
+				<b-dropdown-item to="/all_transactions">
+					View All Transactions
 				</b-dropdown-item>
 			</b-nav-item-dropdown>
 
