@@ -114,7 +114,7 @@ export default {
 				const item = this.items[idx];
 
 				this.$router.push({
-					name: "Item",
+					name: "ViewItem",
 					params: {
 						name: item.name,
 						code: item.code,

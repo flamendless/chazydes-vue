@@ -16,10 +16,18 @@
 			>
 				{{ signed_in ? item.title2 : item.title }}
 			</b-nav-item>
+			<b-nav-item-dropdown>
+				<template #button-content>Transaction</template>
 
-			<b-nav-item to="/transaction" v-if="signed_in">
-				New Transaction
-			</b-nav-item>
+				<b-dropdown-item to="/add_transaction">
+					Add Transaction
+				</b-dropdown-item>
+
+				<b-dropdown-item to="/all_transactions">
+					View All Transactions
+				</b-dropdown-item>
+			</b-nav-item-dropdown>
+
 			<b-nav-item to="/add_item" v-if="signed_in">
 				Add Item
 			</b-nav-item>

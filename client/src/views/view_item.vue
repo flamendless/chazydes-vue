@@ -1,5 +1,5 @@
 <template>
-<div class="item">
+<div class="view_item">
 	<b-tabs content-class="mt-3">
 		<b-tab title="View Item" active>
 			<div class="tabContent">
@@ -38,7 +38,7 @@
 
 <script>
 export default {
-	name: "Item",
+	name: "ViewItem",
 
 	mounted: function() {
 		this.item = this.$route.params;
@@ -84,7 +84,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.item
+.view_item
 {
 	width: 80%;
 	display: block;

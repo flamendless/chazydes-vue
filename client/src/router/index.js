@@ -2,9 +2,11 @@ import Vue from "vue"
 import VueRouter from "vue-router"
 import Home from "../views/home.vue"
 import Dashboard from "../views/dashboard.vue"
-import Transaction from "../views/transaction.vue"
-import Item from "../views/item.vue"
+import AddTransaction from "../views/add_transaction.vue"
+import AllTransactions from "../views/all_transactions.vue"
+import ViewItem from "../views/view_item.vue"
 import AddItem from "../views/add_item.vue"
+import ViewTransaction from "../views/view_transaction.vue"
 
 Vue.use(VueRouter);
 
@@ -30,21 +32,34 @@ const routes = [
 		component: Dashboard,
 	},
 	{
-		path: "/transaction",
-		name: "Transaction",
-		component: Transaction,
-	},
-	{
-		path: "/item",
-		name: "Item",
-		component: Item,
-		props: true
+		path: "/add_transaction",
+		name: "AddTransaction",
+		component: AddTransaction,
 	},
 	{
 		path: "/add_item",
 		name: "AddItem",
 		component: AddItem,
 		props: true
+	},
+	{
+		path: "/view_item",
+		name: "ViewItem",
+		component: ViewItem,
+		props: true
+	},
+	{
+		path: "/all_transactions",
+		name: "AllTransactions",
+		component: AllTransactions,
+	},
+	{
+		path: "/TID",
+		name: "ViewTransaction",
+		component: ViewTransaction,
+		props: (route) => ({
+			...route.params
+		}),
 	},
 ]
 

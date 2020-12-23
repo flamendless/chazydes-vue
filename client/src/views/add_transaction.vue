@@ -1,87 +1,82 @@
 <template>
-<div class="transaction">
+<div class="add_transaction">
 
 	<ValidationObserver ref="observer" v-slot="{handleSubmit}">
 		<b-form @submit.prevent="handleSubmit(on_submit)">
-
-			<input :disabled="can_submit == false" type="submit" class="btn_submit btn btn-primary mt-3" text="Submit">
-
 			<b-tabs content-class="mt-3">
 				<b-tab title="Customer Profile" active>
-					<div class="formItems">
-						<b-form-group class="formGroup1" label-for="input-2">
-							<p class="formTitle">
-								Customer Profile
-							</p>
+					<b-form-group class="formTab1" label-for="input-2">
+						<p class="formTitle">
+							Customer Profile
+						</p>
 
-							<ValidationProvider
-								name="FullName"
-								rules="required"
-								v-slot="{errors}"
+						<ValidationProvider
+							name="FullName"
+							rules="required"
+							v-slot="{errors}"
+						>
+							<b-form-input
+								class="formInput"
+								list="customer-list"
+								v-model="form.fullname"
+								:state="errors[0] ? false : (valid ? true : null)"
+								placeholder="Full Name"
+								@update="autofill_address(form.fullname)"
 							>
-								<b-form-input
-									class="formInput"
-									list="customer-list"
-									v-model="form.fullname"
-									:state="errors[0] ? false : (valid ? true : null)"
-									placeholder="Full Name"
-									@update="autofill_address(form.fullname)"
-								>
-								</b-form-input>
+							</b-form-input>
 
-								<b-form-invalid-feedback id="input_feedback">
-									{{ errors[0] }}
-								</b-form-invalid-feedback>
+							<b-form-invalid-feedback id="input_feedback">
+								{{ errors[0] }}
+							</b-form-invalid-feedback>
 
-								<datalist id="customer-list">
-									<option v-for="customer in customer_names"
-										:key="customer.id">
-										{{customer.fullname}}
-									</option>
-								</datalist>
+							<datalist id="customer-list">
+								<option v-for="customer in customer_names"
+									:key="customer.id">
+									{{customer.fullname}}
+								</option>
+							</datalist>
 
-							</ValidationProvider>
-							<ValidationProvider
-								name="Address"
-								rules="required"
-								v-slot="{errors}"
-							>
-								<b-form-input
-									class="formInput"
-									type="text"
-									v-model="form.address"
-									:state="errors[0] ? false : (valid ? true : null)"
-									placeholder="Address"
-									:readonly="toggle_readonly"
-								></b-form-input>
-								<b-form-invalid-feedback id="input_feedback">
-									{{ errors[0] }}
-								</b-form-invalid-feedback>
-							</ValidationProvider>
-							<ValidationProvider
-								name="PurchaseMode"
-								rules="required"
-								v-slot="{errors}"
-							>
-								<div class="radioButtons">
-									<label>Purchase Type:</label>
+						</ValidationProvider>
+						<ValidationProvider
+							name="Address"
+							rules="required"
+							v-slot="{errors}"
+						>
+							<b-form-input
+								class="formInput"
+								type="text"
+								v-model="form.address"
+								:state="errors[0] ? false : (valid ? true : null)"
+								placeholder="Address"
+								:readonly="toggle_readonly"
+							></b-form-input>
+							<b-form-invalid-feedback id="input_feedback">
+								{{ errors[0] }}
+							</b-form-invalid-feedback>
+						</ValidationProvider>
+						<ValidationProvider
+							name="PurchaseMode"
+							rules="required"
+							v-slot="{errors}"
+						>
+							<div class="radioButtons">
+								<label>Purchase Type:</label>
 
-									<span>
-										<input type="radio" id="online_button" value="online" v-model="form.purchase_mode">
-										<label class="radio_input" for="online_button">Online</label>
-									</span>
+								<span>
+									<input type="radio" id="online_button" value="online" v-model="form.purchase_mode">
+									<label class="radio_input" for="online_button">Online</label>
+								</span>
 
-									<span>
-										<input type="radio" id="walkin_button" value="walk-in" v-model="form.purchase_mode">
-										<label class="radio_input" for="walkin_button">Walk-in</label>
-									</span>
-								</div>
-								<b-form-invalid-feedback id="input_feedback">
-									{{ errors[0] }}
-								</b-form-invalid-feedback>
-							</ValidationProvider>
-						</b-form-group>
-					</div>
+								<span>
+									<input type="radio" id="walkin_button" value="walk-in" v-model="form.purchase_mode">
+									<label class="radio_input" for="walkin_button">Walk-in</label>
+								</span>
+							</div>
+							<b-form-invalid-feedback id="input_feedback">
+								{{ errors[0] }}
+							</b-form-invalid-feedback>
+						</ValidationProvider>
+					</b-form-group>
 				</b-tab>
 
 				<b-tab title="Item">
@@ -136,57 +131,68 @@
 				</b-tab>
 
 				<b-tab title="Quantity and Price">
-					<div class="formItems">
-						<div v-if="selected_rows.length == 0">
-							<p class="formTitle">
-								Please select an item in the Item tab
-							</p>
-						</div>
-
-						<b-form-group v-for="item in selected_rows"
-							:key="item.index" >
-							<ValidationProvider
-								name="ItemQuantity"
-								rules="required"
-								v-slot="{errors}"
-							>
-								<p>
-									{{item.name}}
+					<div class="formTab3">
+						<div class="itemSection">
+							<div v-if="selected_rows.length == 0">
+								<p class="formTitle">
+									Please select an item in the Item tab
 								</p>
+							</div>
+							<b-form-group v-for="item in selected_rows"
+								:key="item.index" >
+								<ValidationProvider
+									name="ItemQuantity"
+									rules="required"
+									v-slot="{errors}"
+								>
+									<p>
+										{{item.name}}
+									</p>
 
-								<b-form-input
-									type="number"
-									v-model="item.item_quantity"
-									placeholder="Quantity"
-									min="0"
-									@update="on_update_qty(item)"
-								></b-form-input>
+									<b-form-input
+										type="number"
+										v-model="item.item_quantity"
+										placeholder="Quantity"
+										min="0"
+										@update="calculate_total_price"
+									></b-form-input>
 
-								<h5>
-									<b-badge class="item_badge" variant="primary">
-										&#8369;
-										{{item.ret_price}}
-									</b-badge>
-									x
-									<b-badge class="item_badge" variant="info">
-										{{item.item_quantity || 0}}
-									</b-badge>
-									=
-									<b-badge class="item_badge" variant="success">
-										&#8369;
-										{{item.ret_price *
-										(item.item_quantity || 0)}}
-									</b-badge>
-								</h5>
+									<h5>
+										<b-badge class="item_badge" variant="primary">
+											&#8369;
+											{{item.ret_price}}
+										</b-badge>
+										x
+										<b-badge class="item_badge" variant="info">
+											{{item.item_quantity || 0}}
+										</b-badge>
+										=
+										<b-badge class="item_badge" variant="success">
+											&#8369;
+											{{item.ret_price *
+											(item.item_quantity || 0)}}
+										</b-badge>
+									</h5>
 
-								<b-form-invalid-feedback id="input_feedback">
-									{{ errors[0] }}
-								</b-form-invalid-feedback>
-							</ValidationProvider>
+									<b-form-invalid-feedback id="input_feedback">
+										{{ errors[0] }}
+									</b-form-invalid-feedback>
+								</ValidationProvider>
 
-							<hr>
-						</b-form-group>
-						{{total_price}}
+								<hr>
+							</b-form-group>
+						</div>
+						<div class="buttonSection">
+							<h4>
+								<b-badge class="total_badge" variant="success">
+									Total:
+									&#8369;
+									{{total_price}}
+								</b-badge>
+							</h4>
+
+							<input :disabled="can_submit == true" type="submit" class="btn_submit btn btn-primary mb-3" text="Submit">
+						</div>
 					</div>
 				</b-tab>
 			</b-tabs>
@@ -200,7 +206,7 @@
 const Axios = require("axios");
 
 export default {
-	name: "Transaction",
+	name: "AddTransaction",
 	components: {
 	},
 
@@ -317,30 +323,26 @@ export default {
 					item_quantity: this.selected_rows[i].item_quantity
 				});
 			}
+
+			alert(JSON.stringify(this.form));
 		},
 	}
 }
 </script>
 
 <style lang="scss" scoped>
-.transaction
+.add_transaction
 {
 	width: 80%;
 	display: block;
 	margin: auto;
 	margin-top: 24px;
 
-	.btn_submit
+	.formTab1
 	{
-		display: block;
-		margin-left: auto;
-	}
-
-	.formItems
-	{
-		width: 50%;
 		display: block;
 		margin: auto;
+		width: 50%;
 
 		.formTitle
 		{
@@ -368,10 +370,57 @@ export default {
 		}
 	}
 
-	.item_badge
+	.formTab2
 	{
-		margin: 12px;
-		padding: 8px;
+
+	}
+
+	.formTab3
+	{
+		display: flex;
+		flex-direction: row;
+		justify-content: space-evenly;
+		margin-left: auto;
+
+		.itemSection
+		{
+			display: block;
+			margin: auto;
+		}
+
+		.buttonSection
+		{
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			position: sticky;
+			top: 80px;
+			z-index: 1020;
+
+			.total_price
+			{
+
+			}
+
+			.btn_submit
+			{
+
+			}
+
+
+		}
+
+		.formInput
+		{
+			margin: auto;
+			margin-top: 24px;
+		}
+
+		.item_badge
+		{
+			margin: 12px;
+			padding: 8px;
+		}
 	}
 }
 </style>
