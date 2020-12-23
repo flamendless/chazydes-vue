@@ -1,31 +1,39 @@
 <template>
 <div class="all_transactions">
-	<b-table
-		hover
-		striped
-		selectable
-		multiple
-		@row-clicked="on_row_clicked"
-		:items="transactions"
-		:filter="filter"
-		:fields="visible_fields"
-	>
-		<template #cell(transaction_id)="data">
-			<a :href="'/TID?transaction_id=' + data.item.transaction_id">
-				TID#{{data.item.transaction_id }}
-			</a>
-		</template>
-	</b-table>
+	<b-card>
+		<p class="cardTitle">
+			All Transactions
+		</p>
+		<b-table
+			hover
+			striped
+			bordered
+			@row-clicked="on_row_clicked"
+			:items="transactions"
+			:filter="filter"
+			:fields="visible_fields"
+		>
+			<template #cell(transaction_id)="data">
+				<a :href="'/TID?transaction_id=' + data.item.transaction_id">
+					TID#{{data.item.transaction_id }}
+				</a>
+			</template>
+		</b-table>
+	</b-card>
 </div>
 </template>
 
 <script>
+const Axios = require("axios");
 
 export default {
 	name: "AllTransactions",
 
 	mounted: function() {
-
+		Axios.get("/get_transactions").then(res => {
+			const data = res.data;
+			this.transactions = data.results;
+		});
 	},
 
 	methods:  {
@@ -37,25 +45,13 @@ export default {
 			fields: [
 				{key: "transaction_id", visible: true, label: "Transaction ID", class: 'text-center'},
 				{key: "transaction_dt", sortable: true, visible: true, label: "Date and Time"},
-				{key: "transaction_type", sortable: true, visible: true, label: "Type"},
-				{key: "customer_name", sortable: true, visible: true, label: "Customer Name"},
+				{key: "type", sortable: true, visible: true, label: "Type"},
+				{key: "customer_id", sortable: true, visible: true, label: "Customer ID"},
 			],
 			filter: null,
 			transactions: [
 				{
-					transaction_id: 1,
-					transaction_dt: "January 1, 2021 / 1:00 PM",
-					transaction_type: "Online",
-					customer_name: "John Doe",
-					items: [
-						{
-							name: "Spoon",
-							code: "spoon1",
-							qty: 1,
-							orig_price: 25,
-							ret_price: 30,
-						}
-					],
+
 				}
 			]
 		}
@@ -76,6 +72,14 @@ export default {
 	width: 80%;
 	display: block;
 	margin: auto;
-	margin-top: 24px;
+	padding: 30px;
+
+	.cardTitle
+	{
+		font-weight: bold;
+		text-align: center;
+	}
+
+
 }
 </style>
