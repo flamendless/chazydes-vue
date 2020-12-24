@@ -140,7 +140,7 @@ app.get("/get_items", (req, res) => {
 			image.filename,
 			image.path
 		FROM tbl_item as item
-		INNER JOIN tbl_image as image ON item.item_id = image.item_id
+		LEFT JOIN tbl_image as image ON item.item_id = image.item_id
 		GROUP BY item.item_id`;
 
 	DB.query(query)

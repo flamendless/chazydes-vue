@@ -17,7 +17,7 @@
 				{{ signed_in ? item.title2 : item.title }}
 			</b-nav-item>
 
-			<b-nav-item-dropdown>
+			<b-nav-item-dropdown v-if="signed_in">
 				<template #button-content>Items</template>
 
 				<b-dropdown-item to="/add_item">
@@ -29,7 +29,7 @@
 				</b-dropdown-item>
 			</b-nav-item-dropdown>
 
-			<b-nav-item-dropdown>
+			<b-nav-item-dropdown v-if="signed_in">
 				<template #button-content>Transaction</template>
 
 				<b-dropdown-item to="/add_transaction">
