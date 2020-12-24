@@ -153,7 +153,7 @@
 										type="number"
 										v-model="item.item_quantity"
 										placeholder="Quantity"
-										min="0"
+										min="1"
 										@update="calculate_total_price"
 									></b-form-input>
 
