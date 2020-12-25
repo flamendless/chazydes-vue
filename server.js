@@ -247,6 +247,56 @@ app.post("/new_supplier", (req, res) => {
 	}));
 });
 
+app.post("/new_customer", (req, res) => {
+	const args = req.body;
+	const params = [args.fullname, args.address];
+	const query = `INSERT INTO tbl_customer(fullname, address) VALUES(?, ?)`;
+
+	DB.query(query, params).then(data => {
+		res.json(data);
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
+app.post("/new_transaction", (req, res) => {
+	const args = req.body;
+	const params = [args.type, args.customer_id];
+	const query = `INSERT INTO tbl_transaction(transaction_dt, type, customer_id)
+		VALUES(now(), ?, ?)`;
+
+	DB.query(query, params).then(data => {
+		res.json(data);
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
+app.post("/add_item_sold", (req, res) => {
+	const args = req.body;
+	const params = [];
+	const query = `INSERT INTO
+		tbl_item_sold(item_id, qty_sold, total_price, profit, transaction_id)
+		VALUES ?`;
+
+	for (let i = 0; i < args.length; i++) {
+		const arg = args[i];
+		params.push([
+			arg.item_id, arg.qty_sold, arg.total_price,
+			arg.profit, arg.transaction_id
+		]);
+	}
+
+	DB.query(query, [params]).then(data => {
+		res.json(data);
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
 app.listen(PORT, () => {
 	console.log(`server listening at http://localhost:${PORT}`)
 });
