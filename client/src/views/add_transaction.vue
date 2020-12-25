@@ -2,7 +2,7 @@
 <div class="add_transaction">
 	<ValidationObserver ref="observer" v-slot="{handleSubmit}">
 		<b-form @submit.prevent="handleSubmit(on_submit)">
-			<b-tabs content-class="mt-3">
+			<b-tabs content-class="mt-3" align="center">
 				<b-tab title="Customer Profile" active>
 					<b-form-group class="formTab1" label-for="input-2">
 						<p class="formTitle">
@@ -374,14 +374,12 @@ export default {
 <style lang="scss" scoped>
 .add_transaction
 {
-	width: 80%;
-	display: block;
 	margin: auto;
 	margin-top: 24px;
+	padding: 16px;
 
 	.formTab1
 	{
-		display: block;
 		margin: auto;
 		width: 50%;
 
@@ -432,18 +430,6 @@ export default {
 			position: sticky;
 			top: 80px;
 			z-index: 1020;
-
-			.total_price
-			{
-
-			}
-
-			.btn_submit
-			{
-
-			}
-
-
 		}
 
 		.formInput

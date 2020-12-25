@@ -5,12 +5,13 @@
 - [ ] View Item
   - [ ] Multi-pictures view
 
-- [ ] Add Transaction
-  - [ ] Required min qty > 0
-  - [ ] Upload to DB
+- [X] Add Transaction
+  - [X] Required min qty > 0
+  - [X] Upload to DB
 
-- [ ] View Transaction
-  - [ ] Display sold items
+- [X] View Transaction
+  - [X] Display sold items
+  - [X] Display image of sold item
 
 - [ ] Inventory
   - [ ] Show item stocks

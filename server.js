@@ -253,6 +253,22 @@ app.get("/get_transaction/:t_id", (req, res) => {
 	}));
 });
 
+app.get("/get_image_by_item_id/:item_id", (req, res) => {
+	const args = req.params;
+	const query = `SELECT * FROM tbl_image WHERE item_id = ${args.item_id}`;
+
+	DB.query(query)
+	.then(data => {
+		if (data.success)
+			res.json(data);
+		else
+			res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
 app.post("/upload_item", (req, res) => {
 	const args = req.body;
 	const params = [args.name, args.code, args.qty,
