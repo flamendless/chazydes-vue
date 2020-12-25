@@ -217,6 +217,40 @@ app.get("/get_suppliers", (req, res) => {
 	}));
 })
 
+app.get("/get_transaction/:t_id", (req, res) => {
+	const args = req.params;
+	const query = `SELECT
+			t.transaction_id,
+			t.transaction_dt,
+			t.type,
+			c.customer_id,
+			c.fullname,
+			c.address,
+			sold.item_sold_id,
+			sold.item_id,
+			sold.qty_sold,
+			sold.total_price,
+			sold.profit,
+			i.item_id,
+			i.name,
+			i.code
+		FROM tbl_transaction as t
+		INNER JOIN tbl_customer as c ON t.customer_id = c.customer_id
+		INNER JOIN tbl_item_sold as sold ON t.transaction_id = sold.transaction_id
+		INNER JOIN tbl_item as i ON i.item_id = sold.item_id
+		WHERE t.transaction_id = ${args.t_id};`
+
+	DB.query(query)
+	.then(data => {
+		if (data.success)
+			res.json(data);
+		else
+			res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
 
 app.post("/upload_item", (req, res) => {
 	const args = req.body;
