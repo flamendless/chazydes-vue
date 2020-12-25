@@ -5,6 +5,12 @@
 - [ ] View Item
   - [ ] Multi-pictures view
 
+- [ ] All Items Table
+  - [ ] Original/Retail price - prepend peso sign
+  - [ ] Qty/Stock should have variant (warning if < 20; danger if == 0)
+  - [ ] Item ID and Name href to "view_item?item_id="
+  - [ ] Supplier name href to "view_supplier?supplier_id="
+
 - [X] Add Transaction
   - [X] Required min qty > 0
   - [X] Upload to DB

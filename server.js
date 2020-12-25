@@ -136,11 +136,13 @@ app.get("/get_items", (req, res) => {
 			item.orig_price,
 			item.ret_price,
 			item.supplier_id,
+			supplier.name AS supplier_name,
 			image.image_id,
 			image.filename,
 			image.path
 		FROM tbl_item as item
 		LEFT JOIN tbl_image as image ON item.item_id = image.item_id
+		LEFT JOIN tbl_supplier as supplier ON item.supplier_id = supplier.supplier_id
 		GROUP BY item.item_id`;
 
 	DB.query(query)
