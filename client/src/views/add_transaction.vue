@@ -2,7 +2,7 @@
 <div class="add_transaction">
 	<ValidationObserver ref="observer" v-slot="{handleSubmit}">
 		<b-form @submit.prevent="handleSubmit(on_submit)">
-			<b-tabs content-class="mt-3">
+			<b-tabs content-class="mt-3" align="center">
 				<b-tab title="Customer Profile" active>
 					<b-form-group class="formTab1" label-for="input-2">
 						<p class="formTitle">
@@ -190,7 +190,7 @@
 							</h4>
 
 							<input
-								:disabled="can_submit == true"
+								:disabled="is_submitting == true"
 								type="submit"
 								class="btn_submit btn btn-primary mb-3"
 								text="Submit"
@@ -226,7 +226,7 @@ export default {
 
 	data: function() {
 		return {
-			can_submit: false,
+			is_submitting: false,
 			toggle_readonly: false,
 			search: "",
 			filter: null,
@@ -241,9 +241,10 @@ export default {
 			},
 			fields: [
 				{key: "selected", visible: true, label: "Selected"},
+				{key: "item_id", visible: false, label: "Item ID"},
 				{key: "name", sortable: true, visible: true, label: "Item Name"},
 				{key: "code", sortable: true, visible: true, label: "Item Code"},
-				{key: "qty", sortable: true, visible: true, label: "Quantity"},
+				{key: "qty", sortable: true, visible: true, label: "Stock"},
 				{key: "orig_price", sortable: true, visible: true, label: "Original Price"},
 				{key: "ret_price", sortable: true, visible: true, label: "Retail Price"},
 			],
@@ -321,7 +322,7 @@ export default {
 		},
 
 		on_submit: async function() {
-			this.can_submit = false;
+			this.is_submitting = true;
 
 			if (this.form.customer_id == null) {
 				const r_customer = await Axios.post("/new_customer", {
@@ -356,10 +357,13 @@ export default {
 			const r_sold = await Axios.post("/add_item_sold", this.form.item_details);
 
 			if (r_sold.data.success) {
-				this.can_submit = true;
+				this.is_submitting = false;
 				alert("Transaction complete");
 				this.$router.push({
-					name: "Dashboard"
+					name: "ViewTransaction",
+					query: {
+						t_id: t_id
+					}
 				});
 			}
 		},
@@ -370,14 +374,12 @@ export default {
 <style lang="scss" scoped>
 .add_transaction
 {
-	width: 80%;
-	display: block;
 	margin: auto;
 	margin-top: 24px;
+	padding: 16px;
 
 	.formTab1
 	{
-		display: block;
 		margin: auto;
 		width: 50%;
 
@@ -407,11 +409,6 @@ export default {
 		}
 	}
 
-	.formTab2
-	{
-
-	}
-
 	.formTab3
 	{
 		display: flex;
@@ -433,18 +430,6 @@ export default {
 			position: sticky;
 			top: 80px;
 			z-index: 1020;
-
-			.total_price
-			{
-
-			}
-
-			.btn_submit
-			{
-
-			}
-
-
 		}
 
 		.formInput

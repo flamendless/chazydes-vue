@@ -1,50 +1,61 @@
 <template>
 <div class="all_items">
-	<b-tabs content-class="mt-3" v-if="signed_in && is_admin"
-		justified
-		v-model="tab"
-		@activate-tab="on_tab_activated">
+	<b-tabs
+		content-class="mt-3"
+		align="center"
+	>
+		<b-tab title="Gallery" active>
+			<div v-if="items.length > 0">
+				<b-card-group deck class="gallery"
+					v-for="i in get_item_count" :key="'item' + i"
+				>
+					<b-card
+						:class="{gallery_item: check_valid_item(i, j) == true}"
+						v-for="j in items_per_row" :key="'card' + j"
+						@click="item_on_click(i, j)">
+
+						<b-card-img
+							v-if="check_valid_item(i, j)"
+							class="item-image"
+							:src="get_item(i, j).image"
+						/>
+						<b-card-title v-if="check_valid_item(i, j)" class="card-title">
+							{{get_item(i, j).name}}
+						</b-card-title>
+
+						<b-card-text v-if="check_valid_item(i, j)">
+							<b>Code: </b>
+							{{get_item(i, j).code}}
+						</b-card-text>
+
+						<b-card-footer v-if="check_valid_item(i, j)">
+							<b-badge :variant="get_qty_variant(items[index(i, j)])">
+								Qty: {{get_item(i, j).qty}}
+							</b-badge>
+							<b-badge variant="info">
+								Orig. Price: <span>&#8369;</span>
+								{{get_item(i, j).orig_price}}
+							</b-badge>
+							<b-badge variant="success">
+								Ret. Price: <span>&#8369;</span>
+								{{get_item(i, j).ret_price}}
+							</b-badge>
+						</b-card-footer>
+					</b-card>
+				</b-card-group>
+			</div>
+		</b-tab>
+
+		<b-tab title="Table">
+			<b-table
+				bordered
+				:items="items"
+				:fields="fields"
+				small
+			>
+			</b-table>
+		</b-tab>
 	</b-tabs>
-
-	<div v-if="items.length > 0">
-		<b-card-group deck class="gallery"
-			v-for="i in get_item_count" :key="'item' + i"
-		>
-			<b-card
-				:class="{gallery_item: check_valid_item(i, j) == true}"
-				v-for="j in items_per_row" :key="'card' + j"
-				@click="item_on_click(i, j)">
-
-				<b-card-img
-					v-if="check_valid_item(i, j)"
-					class="item-image"
-					:src="get_item(i, j).image"
-				/>
-				<b-card-title v-if="check_valid_item(i, j)" class="card-title">
-					{{get_item(i, j).name}}
-				</b-card-title>
-
-				<b-card-text v-if="check_valid_item(i, j)">
-					<b>Code: </b>
-					{{get_item(i, j).code}}
-				</b-card-text>
-
-				<b-card-footer v-if="check_valid_item(i, j)">
-					<b-badge :variant="get_qty_variant(items[index(i, j)])">
-						Qty: {{get_item(i, j).qty}}
-					</b-badge>
-					<b-badge variant="info">
-						Orig. Price: <span>&#8369;</span>
-						{{get_item(i, j).orig_price}}
-					</b-badge>
-					<b-badge variant="success">
-						Ret. Price: <span>&#8369;</span>
-						{{get_item(i, j).ret_price}}
-					</b-badge>
-				</b-card-footer>
-			</b-card>
-		</b-card-group>
-	</div>
 </div>
 </template>
 
@@ -171,15 +182,6 @@ export default {
 			else if (qty < 10) return "warning";
 			else return "primary";
 		},
-
-		on_tab_activated: function(next) {
-			const url = new URL(window.location.href);
-			const sp = url.searchParams;
-			sp.set("tab", next);
-			url.search = sp.toString();
-			const new_url = url.toString();
-			window.history.replaceState({}, null, new_url);
-		},
 	},
 
 	data: function() {
@@ -191,6 +193,15 @@ export default {
 			tab: 0,
 			items_per_row: 5,
 			items: [],
+			fields: [
+				{key: "item_id", label: "Item ID", class: "text-center"},
+				{key: "name", label: "Name"},
+				{key: "code", label: "Code"},
+				{key: "qty", label: "Stock", class: "text-center"},
+				{key: "orig_price", label: "Original Price"},
+				{key: "ret_price", label: "Retail Price"},
+				{key: "supplier_name", label: "Supplier"},
+			],
 		}
 	},
 

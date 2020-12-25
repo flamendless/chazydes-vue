@@ -136,11 +136,13 @@ app.get("/get_items", (req, res) => {
 			item.orig_price,
 			item.ret_price,
 			item.supplier_id,
+			supplier.name AS supplier_name,
 			image.image_id,
 			image.filename,
 			image.path
 		FROM tbl_item as item
 		LEFT JOIN tbl_image as image ON item.item_id = image.item_id
+		LEFT JOIN tbl_supplier as supplier ON item.supplier_id = supplier.supplier_id
 		GROUP BY item.item_id`;
 
 	DB.query(query)
@@ -217,6 +219,58 @@ app.get("/get_suppliers", (req, res) => {
 	}));
 })
 
+app.get("/get_transaction/:t_id", (req, res) => {
+	const args = req.params;
+	const query = `SELECT
+			t.transaction_id,
+			DATE_FORMAT(t.transaction_dt, '%m/%d/%Y') AS date,
+			DATE_FORMAT(t.transaction_dt, '%h:%i:%s %p') AS time,
+			t.type,
+			c.customer_id,
+			c.fullname,
+			c.address,
+			sold.item_sold_id,
+			sold.item_id,
+			sold.qty_sold,
+			sold.total_price,
+			sold.profit,
+			i.item_id,
+			i.name,
+			i.code
+		FROM tbl_transaction as t
+		INNER JOIN tbl_customer as c ON t.customer_id = c.customer_id
+		INNER JOIN tbl_item_sold as sold ON t.transaction_id = sold.transaction_id
+		INNER JOIN tbl_item as i ON i.item_id = sold.item_id
+		WHERE t.transaction_id = ${args.t_id};`
+
+	DB.query(query)
+	.then(data => {
+		if (data.success)
+			res.json(data);
+		else
+			res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
+app.get("/get_image_by_item_id/:item_id", (req, res) => {
+	const args = req.params;
+	const query = `SELECT * FROM tbl_image WHERE item_id = ${args.item_id}`;
+
+	DB.query(query)
+	.then(data => {
+		if (data.success)
+			res.json(data);
+		else
+			res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
 app.post("/upload_item", (req, res) => {
 	const args = req.body;
 	const params = [args.name, args.code, args.qty,
@@ -263,7 +317,7 @@ app.post("/new_transaction", (req, res) => {
 	const args = req.body;
 	const params = [args.type, args.customer_id];
 	const query = `INSERT INTO tbl_transaction(transaction_dt, type, customer_id)
-		VALUES(now(), ?, ?)`;
+		VALUES(NOW(), ?, ?)`;
 
 	DB.query(query, params).then(data => {
 		res.json(data);

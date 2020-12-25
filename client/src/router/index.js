@@ -59,9 +59,6 @@ const routes = [
 		path: "/view_transaction",
 		name: "ViewTransaction",
 		component: ViewTransaction,
-		props: (route) => ({
-			...route.params
-		}),
 	},
 	{
 		path: "/all_transactions",

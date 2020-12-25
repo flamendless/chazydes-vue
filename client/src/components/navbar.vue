@@ -18,7 +18,7 @@
 			</b-nav-item>
 
 			<b-nav-item-dropdown v-if="signed_in">
-				<template #button-content>Items</template>
+				<template #button-content>Item</template>
 
 				<b-dropdown-item to="/add_item">
 					Add Item

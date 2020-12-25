@@ -5,12 +5,19 @@
 - [ ] View Item
   - [ ] Multi-pictures view
 
-- [ ] Add Transaction
-  - [ ] Required min qty > 0
-  - [ ] Upload to DB
+- [ ] All Items Table
+  - [ ] Original/Retail price - prepend peso sign
+  - [ ] Qty/Stock should have variant (warning if < 20; danger if == 0)
+  - [ ] Item ID and Name href to "view_item?item_id="
+  - [ ] Supplier name href to "view_supplier?supplier_id="
 
-- [ ] View Transaction
-  - [ ] Display sold items
+- [X] Add Transaction
+  - [X] Required min qty > 0
+  - [X] Upload to DB
+
+- [X] View Transaction
+  - [X] Display sold items
+  - [X] Display image of sold item
 
 - [ ] Inventory
   - [ ] Show item stocks
