@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 18, 2020 at 03:23 AM
+-- Generation Time: Dec 25, 2020 at 09:15 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -56,6 +56,13 @@ CREATE TABLE `tbl_customer` (
   `address` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `tbl_customer`
+--
+
+INSERT INTO `tbl_customer` (`customer_id`, `fullname`, `address`) VALUES
+(1, 'Brandon B. Lim-it', 'General Trias');
+
 -- --------------------------------------------------------
 
 --
@@ -64,8 +71,21 @@ CREATE TABLE `tbl_customer` (
 
 CREATE TABLE `tbl_image` (
   `image_id` int(11) NOT NULL,
-  `filename` varchar(200) DEFAULT NULL
+  `item_id` int(11) NOT NULL,
+  `filename` varchar(200) DEFAULT NULL,
+  `path` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_image`
+--
+
+INSERT INTO `tbl_image` (`image_id`, `item_id`, `filename`, `path`) VALUES
+(3, 28, '1609188163896.png', 'client/src/uploads/1609188163896.png'),
+(4, 28, '1609256059341.png', 'client/src/uploads/1609256059341.png'),
+(5, 29, '1608910569390.jpeg', 'client/src/uploads/1608910569390.jpeg'),
+(6, 29, '1609072700152.png', 'client/src/uploads/1609072700152.png'),
+(7, 30, '1608845713676.jpeg', 'client/src/uploads/1608845713676.jpeg');
 
 -- --------------------------------------------------------
 
@@ -80,25 +100,18 @@ CREATE TABLE `tbl_item` (
   `qty` int(11) DEFAULT NULL,
   `orig_price` decimal(10,0) DEFAULT NULL,
   `ret_price` decimal(10,0) DEFAULT NULL,
-  `supplier_id` int(11) DEFAULT NULL,
-  `image_id` int(11) DEFAULT NULL
+  `supplier_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `tbl_item`
 --
 
-INSERT INTO `tbl_item` (`item_id`, `name`, `code`, `qty`, `orig_price`, `ret_price`, `supplier_id`, `image_id`) VALUES
-(1, 'Item 1', 'ITEM1', 0, '20', '25', NULL, NULL),
-(2, 'Item 2', 'ITEM2', 0, '30', '35', NULL, NULL),
-(3, 'Item 3', 'ITEM3', 0, '31', '36', NULL, NULL),
-(4, 'Item 4', 'ITEM4', 0, '32', '37', NULL, NULL),
-(5, 'Item 5', 'ITEM5', 0, '33', '38', NULL, NULL),
-(6, 'Item 6', 'ITEM6', 0, '34', '39', NULL, NULL),
-(7, 'Item 7', 'ITEM7', 0, '35', '40', NULL, NULL),
-(8, 'Item 8', 'ITEM8', 0, '36', '41', NULL, NULL),
-(9, 'Item 9', 'ITEM9', 0, '37', '42', NULL, NULL),
-(10, 'Item 10', 'ITEM10', 0, '38', '43', NULL, NULL);
+INSERT INTO `tbl_item` (`item_id`, `name`, `code`, `qty`, `orig_price`, `ret_price`, `supplier_id`) VALUES
+(27, 'mugmug', 'mgtest', 3, '50', '100', 1),
+(28, 'mugmug', 'mgtest', 3, '50', '100', 1),
+(29, 'Plate', 'PL123', 4, '50', '100', 1),
+(30, 'Fork', 'fork123', 4, '50', '100', 1);
 
 -- --------------------------------------------------------
 
@@ -115,6 +128,18 @@ CREATE TABLE `tbl_item_sold` (
   `transaction_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `tbl_item_sold`
+--
+
+INSERT INTO `tbl_item_sold` (`item_sold_id`, `item_id`, `qty_sold`, `total_price`, `profit`, `transaction_id`) VALUES
+(1, 28, 3, '300.00', '150.000', 2),
+(2, 30, 4, '400.00', '200.000', 2),
+(3, 29, 2, '200.00', '100.000', 3),
+(4, 30, 3, '300.00', '150.000', 3),
+(5, 29, 5, '500.00', '250.000', 4),
+(6, 30, 5, '500.00', '250.000', 4);
+
 -- --------------------------------------------------------
 
 --
@@ -125,6 +150,13 @@ CREATE TABLE `tbl_supplier` (
   `supplier_id` int(11) NOT NULL,
   `name` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_supplier`
+--
+
+INSERT INTO `tbl_supplier` (`supplier_id`, `name`) VALUES
+(1, 'Brandon');
 
 -- --------------------------------------------------------
 
@@ -138,6 +170,16 @@ CREATE TABLE `tbl_transaction` (
   `type` enum('walk_in','online') DEFAULT NULL,
   `customer_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_transaction`
+--
+
+INSERT INTO `tbl_transaction` (`transaction_id`, `transaction_dt`, `type`, `customer_id`) VALUES
+(1, '2020-12-25 11:41:12', 'online', 1),
+(2, '2020-12-25 11:47:22', 'walk_in', 1),
+(3, '2020-12-25 11:49:29', 'walk_in', 1),
+(4, '2020-12-25 13:00:24', 'online', 1);
 
 -- --------------------------------------------------------
 
@@ -225,37 +267,37 @@ ALTER TABLE `tbl_account`
 -- AUTO_INCREMENT for table `tbl_customer`
 --
 ALTER TABLE `tbl_customer`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_image`
 --
 ALTER TABLE `tbl_image`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tbl_item`
 --
 ALTER TABLE `tbl_item`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `tbl_item_sold`
 --
 ALTER TABLE `tbl_item_sold`
-  MODIFY `item_sold_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `item_sold_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_supplier`
 --
 ALTER TABLE `tbl_supplier`
-  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_transaction`
 --
 ALTER TABLE `tbl_transaction`
-  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_user`
