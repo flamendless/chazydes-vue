@@ -59,7 +59,8 @@ export default {
 				const data = res[i];
 				const t = {
 					transaction_id: data.transaction_id,
-					transaction_dt: data.transaction_dt,
+					date: data.date,
+					time: data.time,
 					type: data.type,
 					customer_name: data.fullname,
 					customer_address: data.address,
@@ -81,7 +82,8 @@ export default {
 			current_page: 1,
 			fields: [
 				{key: "transaction_id", label: "Transaction ID", class: 'text-center', variant: "info",},
-				{key: "transaction_dt", label: "Date and Time", class: 'text-center'},
+				{key: "date", label: "Date", class: 'text-center'},
+				{key: "time", label: "Time", class: 'text-center'},
 				{key: "type", label: "Type", class: 'text-center'},
 				{key: "customer_name", label: "Customer Name", class: 'text-center'},
 				{key: "customer_address", label: "Customer Address", class: 'text-center'},

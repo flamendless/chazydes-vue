@@ -221,7 +221,8 @@ app.get("/get_transaction/:t_id", (req, res) => {
 	const args = req.params;
 	const query = `SELECT
 			t.transaction_id,
-			t.transaction_dt,
+			DATE_FORMAT(t.transaction_dt, '%m/%d/%Y') AS date,
+			DATE_FORMAT(t.transaction_dt, '%h:%i:%s %p') AS time,
 			t.type,
 			c.customer_id,
 			c.fullname,
@@ -298,7 +299,7 @@ app.post("/new_transaction", (req, res) => {
 	const args = req.body;
 	const params = [args.type, args.customer_id];
 	const query = `INSERT INTO tbl_transaction(transaction_dt, type, customer_id)
-		VALUES(now(), ?, ?)`;
+		VALUES(NOW(), ?, ?)`;
 
 	DB.query(query, params).then(data => {
 		res.json(data);
