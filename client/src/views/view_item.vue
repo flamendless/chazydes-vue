@@ -1,13 +1,37 @@
 <template>
 <div class="view_item">
-	<b-tabs content-class="mt-3">
+	<b-tabs content-class="mt-3" align="center">
 		<b-tab title="View Item" active>
 			<div class="tabContent">
 				<b-card class="pictureSection" v-if="item">
-					<b-card-img class="itemPic" src="../uploads/goblet.png" />
-					<b-button class="changeButton" variant="primary" size="sm">
-						Upload Picture
-					</b-button>
+					<b-card-img
+						class="itemPic"
+						v-if="images[current_image]"
+						:src="images[current_image]"
+					/>
+					<b-card-img
+						class="itemPic"
+						v-else
+						src="../assets/template_qm.png"
+					/>
+
+					<b-row class="image_row">
+						<b-col
+							v-for="(img, i) in images"
+							:key="'image' + i"
+						>
+							<b-button
+								variant="link"
+								@click="current_image = i"
+							>
+								<b-card-img
+									fluid
+									:src="images[i]"
+								>
+								</b-card-img>
+							</b-button>
+						</b-col>
+					</b-row>
 
 					<b-card-footer>
 						<b-badge :variant="get_qty_variant(item)">
@@ -23,7 +47,11 @@
 				</b-card>
 
 				<b-card class="tableSection">
-					<b-table bordered stacked :items="items" :fields="fields">
+					<b-table
+						bordered
+						stacked
+						:items="items"
+						:fields="fields">
 					</b-table>
 				</b-card>
 			</div>
@@ -37,11 +65,26 @@
 </template>
 
 <script>
+const Axios = require("axios");
+
 export default {
 	name: "ViewItem",
 
-	mounted: function() {
-		this.item = this.$route.params;
+	mounted: async function() {
+		const q = this.$route.query;
+		const item_id = q.item_id;
+
+		const r_item = await Axios.get("/get_item/" + item_id);
+		const results = r_item.data.results;
+
+		for (let i = 0; i < results.length; i++) {
+			const filename = results[i].filename;
+			const image = require("@/uploads/" + filename);
+
+			this.images.push(image);
+		}
+
+		this.item = results[0];
 		this.items.push(this.item);
 	},
 
@@ -56,27 +99,17 @@ export default {
 
 	data: function() {
 		return {
+			images: [],
+			current_image: 0,
 			item: null,
 			items: [],
 			fields: [
-				{
-					key: "name",
-					variant: "info",
-				},
-				{
-					key: "code",
-				},
-				{
-					key: "qty",
-					variant: "info",
-				},
-				{
-					key: "ret_price",
-				},
-				{
-					key: "orig_price",
-					variant: "info",
-				},
+				{key: "name", label: "Name:"},
+				{key: "code", label: "Code:"},
+				{key: "qty", label: "Qty/Stock:"},
+				{key: "ret_price", label: "Retail Price:"},
+				{key: "orig_price", label: "Original Price:"},
+				{key: "supplier_name", label: "Supplier:"},
 			],
 		}
 	},
@@ -86,34 +119,28 @@ export default {
 <style lang="scss" scoped>
 .view_item
 {
-	width: 80%;
-	display: block;
-	margin: auto;
-	margin-top: 24px;
+	padding: 16px;
 
 	.tabContent
 	{
+		padding: 32px;
 		display: flex;
 		flex-direction: row;
 
+		.image_row
+		{
+			padding: 8px;
+			margin-bottom: 16px;
+		}
+
 		.pictureSection
 		{
-			width: 30%;
-			margin-right: 20px;
+			width: 40%;
 			box-shadow: 0 0 2px grey;
+			margin-right: 32px;
 
 			.itemPic
 			{
-				width: 70%;
-				display: block;
-				margin: auto;
-			}
-
-			.changeButton
-			{
-				display: block;
-				margin: auto;
-				margin-top: 16px;
 				margin-bottom: 16px;
 			}
 
@@ -122,6 +149,7 @@ export default {
 				border: none;
 				padding: 0;
 				background-color: white;
+				text-align: center;
 
 				.badge
 				{

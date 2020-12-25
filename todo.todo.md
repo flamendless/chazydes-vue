@@ -3,7 +3,8 @@
   - [X] Upload to DB
 
 - [ ] View Item
-  - [ ] Multi-pictures view
+  - [ ] Edit Item
+  - [X] Multi-pictures view
 
 - [ ] All Items Table
   - [ ] Original/Retail price - prepend peso sign
