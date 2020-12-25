@@ -1,6 +1,5 @@
 <template>
 <div class="add_transaction">
-
 	<ValidationObserver ref="observer" v-slot="{handleSubmit}">
 		<b-form @submit.prevent="handleSubmit(on_submit)">
 			<b-tabs content-class="mt-3">
@@ -18,10 +17,10 @@
 							<b-form-input
 								class="formInput"
 								list="customer-list"
-								v-model="form.fullname"
+								v-model="form.customer_fullname"
 								:state="errors[0] ? false : (valid ? true : null)"
-								placeholder="Full Name"
-								@update="autofill_address(form.fullname)"
+								placeholder="Customer Full Name"
+								@update="autofill_address(form.customer_fullname)"
 							>
 							</b-form-input>
 
@@ -45,7 +44,7 @@
 							<b-form-input
 								class="formInput"
 								type="text"
-								v-model="form.address"
+								v-model="form.customer_address"
 								:state="errors[0] ? false : (valid ? true : null)"
 								placeholder="Address"
 								:readonly="toggle_readonly"
@@ -54,6 +53,7 @@
 								{{ errors[0] }}
 							</b-form-invalid-feedback>
 						</ValidationProvider>
+
 						<ValidationProvider
 							name="PurchaseMode"
 							rules="required"
@@ -68,7 +68,7 @@
 								</span>
 
 								<span>
-									<input type="radio" id="walkin_button" value="walk-in" v-model="form.purchase_mode">
+									<input type="radio" id="walkin_button" value="walk_in" v-model="form.purchase_mode">
 									<label class="radio_input" for="walkin_button">Walk-in</label>
 								</span>
 							</div>
@@ -125,8 +125,6 @@
 								</b-icon-check>
 							</template>
 						</b-table>
-
-						{{selected_rows}}
 					</div>
 				</b-tab>
 
@@ -151,9 +149,9 @@
 
 									<b-form-input
 										type="number"
-										v-model="item.item_quantity"
+										v-model="item.qty_sold"
 										placeholder="Quantity"
-										min="0"
+										min="1"
 										@update="calculate_total_price"
 									></b-form-input>
 
@@ -164,13 +162,13 @@
 										</b-badge>
 										x
 										<b-badge class="item_badge" variant="info">
-											{{item.item_quantity || 0}}
+											{{item.qty_sold || 0}}
 										</b-badge>
 										=
 										<b-badge class="item_badge" variant="success">
 											&#8369;
 											{{item.ret_price *
-											(item.item_quantity || 0)}}
+											(item.qty_sold || 0)}}
 										</b-badge>
 									</h5>
 
@@ -191,7 +189,12 @@
 								</b-badge>
 							</h4>
 
-							<input :disabled="can_submit == true" type="submit" class="btn_submit btn btn-primary mb-3" text="Submit">
+							<input
+								:disabled="can_submit == true"
+								type="submit"
+								class="btn_submit btn btn-primary mb-3"
+								text="Submit"
+							>
 						</div>
 					</div>
 				</b-tab>
@@ -207,8 +210,6 @@ const Axios = require("axios");
 
 export default {
 	name: "AddTransaction",
-	components: {
-	},
 
 	mounted: function() {
 		Axios.get("/get_items_list").then(res => {
@@ -232,10 +233,11 @@ export default {
 			valid: false,
 			selected_rows: [],
 			form: {
-				fullname: "",
-				address: "",
-				purchase_mode: "",
+				customer_id: null,
+				customer_fullname: "",
+				customer_address: "",
 				item_details: [],
+				purchase_mode: null,
 			},
 			fields: [
 				{key: "selected", visible: true, label: "Selected"},
@@ -285,7 +287,7 @@ export default {
 			}
 
 			if (!found) {
-				item.item_quantity = null;
+				item.qty_sold = null;
 				item.selected = true;
 				this.selected_rows.push(item);
 			}
@@ -294,7 +296,7 @@ export default {
 		calculate_total_price: function() {
 			let sum = 0;
 			this.selected_rows.forEach(e => {
-				sum += e.ret_price * e.item_quantity;
+				sum += e.ret_price * e.qty_sold;
 			});
 			this.total_price = sum;
 		},
@@ -305,8 +307,10 @@ export default {
 
 		autofill_address: function(customer_name) {
 			for (let i = 0; i < this.customer_names.length; i++){
-				if (this.customer_names[i].fullname === customer_name){
-					this.form.address = this.customer_names[i].address
+				const customer = this.customer_names[i];
+				if (customer.fullname === customer_name){
+					this.form.customer_id = customer.customer_id;
+					this.form.customer_address = customer.address
 					this.toggle_readonly = true;
 					break;
 				}
@@ -316,15 +320,48 @@ export default {
 			}
 		},
 
-		on_submit: function() {
+		on_submit: async function() {
+			this.can_submit = false;
+
+			if (this.form.customer_id == null) {
+				const r_customer = await Axios.post("/new_customer", {
+					fullname: this.form.customer_fullname,
+					address: this.form.customer_address,
+				});
+
+				this.form.customer_id = r_customer.data.results.insertId;
+			}
+
+			const r_transaction = await Axios.post("/new_transaction", {
+				customer_id: this.form.customer_id,
+				type: this.form.purchase_mode,
+			});
+			const t_id = r_transaction.data.results.insertId;
+
 			for (let i = 0; i < this.selected_rows.length; i++){
+				const row = this.selected_rows[i];
+				const tp = row.ret_price * row.qty_sold;
+				const tr = row.orig_price * row.qty_sold;
+				const profit = tp - tr;
+
 				this.form.item_details.push({
-					item_name: this.selected_rows[i].name,
-					item_quantity: this.selected_rows[i].item_quantity
+					item_id: row.item_id,
+					qty_sold: row.qty_sold,
+					total_price: tp,
+					profit: profit,
+					transaction_id: t_id,
 				});
 			}
 
-			alert(JSON.stringify(this.form));
+			const r_sold = await Axios.post("/add_item_sold", this.form.item_details);
+
+			if (r_sold.data.success) {
+				this.can_submit = true;
+				alert("Transaction complete");
+				this.$router.push({
+					name: "Dashboard"
+				});
+			}
 		},
 	}
 }
