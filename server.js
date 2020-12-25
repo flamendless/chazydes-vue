@@ -126,6 +126,36 @@ app.post("/get_profile", (req, res) => {
 	}));
 });
 
+app.get("/get_item/:item_id", (req, res) => {
+	const args = req.params;
+	const query = `SELECT
+			item.item_id,
+			item.name,
+			item.code,
+			item.qty,
+			item.orig_price,
+			item.ret_price,
+			item.supplier_id,
+			supplier.name AS supplier_name,
+			image.image_id,
+			image.filename
+		FROM tbl_item as item
+		LEFT JOIN tbl_image as image ON item.item_id = image.item_id
+		LEFT JOIN tbl_supplier as supplier ON item.supplier_id = supplier.supplier_id
+		WHERE item.item_id = ${args.item_id}`;
+
+	DB.query(query)
+	.then(data => {
+		if (data.success)
+			res.json(data);
+		else
+			res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
 app.get("/get_items", (req, res) => {
 	const args = req.params;
 	const query = `SELECT

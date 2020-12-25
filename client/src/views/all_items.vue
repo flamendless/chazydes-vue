@@ -165,12 +165,8 @@ export default {
 
 				this.$router.push({
 					name: "ViewItem",
-					params: {
-						name: item.name,
-						code: item.code,
-						qty: item.qty,
-						orig_price: item.orig_price,
-						ret_price: item.ret_price,
+					query: {
+						item_id: item.item_id,
 					}
 				});
 			}
@@ -223,6 +219,7 @@ export default {
 
 		.gallery_item
 		{
+			cursor: pointer;
 			box-shadow: 0 0 8px grey;
 
 			.item-image
