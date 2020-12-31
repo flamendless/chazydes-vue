@@ -24,7 +24,7 @@ const disk_storage = multer.diskStorage({
 		if (file.mimetype == "image/png")
 			ext = ".png";
 		else if (file.mimetype == "image/jpeg")
-			ext = ".jpeg"
+			ext = ".jpeg";
 
 		const u = Date.now() + Math.round(Math.random() * 1E9);
 		cb(null, u + ext);
@@ -44,6 +44,19 @@ app.post("/upload_item_images", upload.array("img_items"), function(req, res) {
 	}
 
 	DB.query(query, [params]).then(data => {
+		res.json(data);
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
+app.post("/remove_item_image", (req, res) => {
+	const args = req.body;
+	const params = [args.item_id, args.filename];
+	const query = `DELETE FROM tbl_image WHERE image_id = ? AND filename = ?`;
+
+	DB.query(query, params).then(data => {
 		res.json(data);
 	}).catch(err => res.json({
 		success: false,
@@ -308,6 +321,27 @@ app.post("/upload_item", (req, res) => {
 	const query = `INSERT INTO
 		tbl_item(name, code, qty, orig_price, ret_price, supplier_id)
 		VALUES(?, ?, ?, ?, ?, ?)`;
+
+	DB.query(query, params).then(data => {
+		res.json(data);
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
+app.post("/update_item", (req, res) => {
+	const args = req.body;
+	const params = [args.name, args.code, args.qty,
+		args.orig_price, args.ret_price, args.supplier_id];
+	const query = `UPDATE tbl_item SET
+			name = ?,
+			code = ?,
+			qty = ?,
+			orig_price = ?,
+			ret_price = ?,
+			supplier_id = ?
+		WHERE item_id = ${args.item_id}`;
 
 	DB.query(query, params).then(data => {
 		res.json(data);

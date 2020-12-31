@@ -128,7 +128,7 @@
 					</div>
 				</b-tab>
 
-				<b-tab title="Quantity and Price">
+				<b-tab title="Quantity and Price" lazy>
 					<div class="formTab3">
 						<div class="itemSection">
 							<div v-if="selected_rows.length == 0">
