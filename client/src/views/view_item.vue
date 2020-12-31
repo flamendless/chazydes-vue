@@ -1,6 +1,9 @@
 <template>
 <div class="view_item">
-	<b-tabs content-class="mt-3" align="center">
+	<b-tabs
+		content-class="mt-3"
+		align="center"
+	>
 		<b-tab title="View Item" active>
 			<div class="tabContent">
 				<b-card class="pictureSection" v-if="item">
@@ -57,18 +60,22 @@
 			</div>
 		</b-tab>
 
-		<b-tab title="Edit Item" class="tabContent">
+		<b-tab title="Edit Item" class="tabContent" lazy>
+			<EditItem :form="form" :str_images="str_images" />
 		</b-tab>
 	</b-tabs>
-
 </div>
 </template>
 
 <script>
 const Axios = require("axios");
+import EditItem from "@/components/edit_item.vue";
 
 export default {
 	name: "ViewItem",
+	components: {
+		EditItem
+	},
 
 	mounted: async function() {
 		const q = this.$route.query;
@@ -81,11 +88,21 @@ export default {
 			const filename = results[i].filename;
 			const image = require("@/uploads/" + filename);
 
+			this.str_images.push(filename);
 			this.images.push(image);
 		}
 
 		this.item = results[0];
 		this.items.push(this.item);
+
+		this.form.item_id = this.item.item_id;
+		this.form.name = this.item.name;
+		this.form.code = this.item.code;
+		this.form.qty = this.item.qty;
+		this.form.orig_price = this.item.orig_price;
+		this.form.ret_price = this.item.ret_price;
+		this.form.supplier_id = this.item.supplier_id;
+		this.form.supplier_name = this.item.supplier_name;
 	},
 
 	methods: {
@@ -99,10 +116,12 @@ export default {
 
 	data: function() {
 		return {
+			str_images: [],
 			images: [],
 			current_image: 0,
 			item: null,
 			items: [],
+			form: {},
 			fields: [
 				{key: "name", label: "Name:"},
 				{key: "code", label: "Code:"},

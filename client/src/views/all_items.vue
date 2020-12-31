@@ -46,7 +46,7 @@
 			</div>
 		</b-tab>
 
-		<b-tab title="Table">
+		<b-tab title="Table" lazy>
 			<b-table
 				bordered
 				:items="items"

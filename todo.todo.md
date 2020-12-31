@@ -4,6 +4,7 @@
 
 - [ ] View Item
   - [ ] Edit Item
+  - [ ] Prices should have peso sign prepended
   - [X] Multi-pictures view
 
 - [ ] All Items Table
