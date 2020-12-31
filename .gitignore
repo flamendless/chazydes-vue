@@ -2,6 +2,8 @@
 node_modules
 /dist
 media/
+client/src/uploads/
+database.js
 
 
 # local env files
