@@ -31,9 +31,18 @@ export default {
 	name: "AllTransactions",
 
 	mounted: function() {
-		Axios.get("/get_transaction").then(res => {
+		Axios.get("/get_all_transactions").then(res => {
 			const data = res.data;
 			this.transactions = data.results;
+
+			for (let i = 0; i < this.transactions.length; i++) {
+				const t = this.transactions[i];
+
+				if (t.type == "walk_in")
+					t.transaction_type = "Walk In";
+				else if (t.type == "online")
+					t.transaction_type = "Online";
+			}
 		});
 	},
 
@@ -46,8 +55,9 @@ export default {
 			fields: [
 				{key: "transaction_id", visible: true, label: "Transaction ID", class: 'text-center'},
 				{key: "transaction_dt", sortable: true, visible: true, label: "Date and Time"},
-				{key: "type", sortable: true, visible: true, label: "Type"},
-				{key: "customer_id", sortable: true, visible: true, label: "Customer ID"},
+				{key: "transaction_type", sortable: true, visible: true, label: "Type"},
+				{key: "fullname", sortable: true, visible: true, label: "Customer Name"},
+				{key: "address", sortable: true, visible: true, label: "Address"},
 			],
 			filter: null,
 			transactions: [

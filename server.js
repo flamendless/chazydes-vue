@@ -262,9 +262,18 @@ app.get("/get_suppliers", (req, res) => {
 	}));
 })
 
-app.get("/get_transaction", (req, res) => {
+app.get("/get_all_transactions", (req, res) => {
 	const args = req.params;
-	const query = `SELECT * FROM tbl_transaction`;
+	const query = `SELECT
+			t.transaction_id,
+			DATE_FORMAT(t.transaction_dt, '%m/%d/%Y') AS date,
+			DATE_FORMAT(t.transaction_dt, '%h:%i:%s %p') AS time,
+			t.type,
+			c.customer_id,
+			c.fullname,
+			c.address
+		FROM tbl_transaction as t
+		INNER JOIN tbl_customer as c ON t.customer_id = c.customer_id`;
 
 	DB.query(query)
 	.then(data => {
