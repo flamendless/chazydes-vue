@@ -39,7 +39,7 @@ export default {
 
 .control_panel
 {
-	margin-bottom: 16px;
+	padding: 16px;
 	cursor: pointer;
 }
 </style>

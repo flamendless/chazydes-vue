@@ -47,13 +47,18 @@
 		</b-tab>
 
 		<b-tab title="Table" lazy>
-			<b-table
-				bordered
-				:items="items"
-				:fields="fields"
-				small
-			>
-			</b-table>
+			<b-card>
+				<b-table
+					hover
+					striped
+					selectable
+					multiple
+					bordered
+					:items="items"
+					:fields="fields"
+				>
+				</b-table>
+			</b-card>
 		</b-tab>
 	</b-tabs>
 </div>
@@ -249,6 +254,8 @@ export default {
 			}
 		}
 	}
+
+
 }
 
 </style>

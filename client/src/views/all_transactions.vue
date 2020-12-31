@@ -31,7 +31,7 @@ export default {
 	name: "AllTransactions",
 
 	mounted: function() {
-		Axios.get("/get_transactions").then(res => {
+		Axios.get("/get_transaction").then(res => {
 			const data = res.data;
 			this.transactions = data.results;
 		});
@@ -71,7 +71,6 @@ export default {
 .all_transactions
 {
 	width: 80%;
-	display: block;
 	margin: auto;
 	padding: 30px;
 

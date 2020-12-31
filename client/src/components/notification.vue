@@ -12,7 +12,6 @@
 					selectable
 					multiple
 					bordered
-					@row-clicked="on_row_clicked"
 					:items="items1"
 					:filter="filter"
 					:fields="visible_fields"
@@ -50,7 +49,6 @@
 					selectable
 					multiple
 					bordered
-					@row-clicked="on_row_clicked"
 					:items="items2"
 					:filter="filter"
 					:fields="visible_fields"

@@ -262,6 +262,20 @@ app.get("/get_suppliers", (req, res) => {
 	}));
 })
 
+app.get("/get_transaction", (req, res) => {
+	const args = req.params;
+	const query = `SELECT * FROM tbl_transaction`;
+
+	DB.query(query)
+	.then(data => {
+		if (data.success) res.json(data);
+		else res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+})
+
 app.get("/get_transaction/:t_id", (req, res) => {
 	const args = req.params;
 	const query = `SELECT
