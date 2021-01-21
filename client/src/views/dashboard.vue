@@ -4,7 +4,7 @@
 		<Notification />
 	</div>
 	<div class="control_section">
-		<b-card title="Controls" body-class="text-center">
+		<b-card title="Menu" body-class="text-center">
 			<b-card-group deck>
 				<Control
 					name="View All Items"

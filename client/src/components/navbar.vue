@@ -16,7 +16,11 @@
 			>
 				{{ signed_in ? item.title2 : item.title }}
 			</b-nav-item>
-
+			<b-nav-item
+				to="/report"
+			>
+				Report
+			</b-nav-item>
 			<b-nav-item-dropdown v-if="signed_in">
 				<template #button-content>Item</template>
 

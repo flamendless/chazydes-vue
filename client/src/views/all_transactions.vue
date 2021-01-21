@@ -15,7 +15,7 @@
 			:fields="visible_fields"
 		>
 			<template #cell(transaction_id)="data">
-				<a :href="'/view_transaction?transaction_id=' + data.item.transaction_id">
+				<a :href="'/view_transaction?t_id=' + data.item.transaction_id">
 					TID#{{data.item.transaction_id }}
 				</a>
 			</template>

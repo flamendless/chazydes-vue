@@ -8,6 +8,8 @@ import AllItems from "../views/all_items.vue"
 import AddTransaction from "../views/add_transaction.vue"
 import ViewTransaction from "../views/view_transaction.vue"
 import AllTransactions from "../views/all_transactions.vue"
+import Report from "../views/report.vue"
+
 
 Vue.use(VueRouter);
 
@@ -31,6 +33,11 @@ const routes = [
 		path: "/dashboard",
 		name: "Dashboard",
 		component: Dashboard,
+	},
+	{
+		path: "/report",
+		name: "Report",
+		component: Report,
 	},
 	{
 		path: "/add_item",
