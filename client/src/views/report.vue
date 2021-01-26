@@ -1,70 +1,97 @@
 <template>
 <div class="report">
-	<b-card title="Reports" body-class="text-center">
-		<div class="report_container">
-			<label for="example-datepicker">Choose a report from: </label>
-			<b-form-datepicker
-				id="datepicker_from"
-				v-model="date_from"
-				:max="date_to"
-				:date-format-options="{ year: 'numeric', month: 'short', day: '2-digit', weekday: 'short' }"
-				class="datepicker mb-2"
-			>
-			</b-form-datepicker>
+	<h2 align="center">
+		Reports
+	</h2>
 
-			<label for="example-datepicker">Choose a report up to: </label>
-			<b-form-datepicker
-				id="datepicker_to"
-				v-model="date_to"
-				:min="date_from"
-				:max="date_today"
-				:date-format-options="{ year: 'numeric', month: 'short', day: '2-digit', weekday: 'short' }"
-				class="datepicker mb-2"
-			>
-			</b-form-datepicker>
+	<b-form @submit.prevent="handleSubmit(on_submit)">
+		<b-row style="padding: 32px;">
+			<b-col>
+				<b-form-group>
+					<label for="datepicker_from">Select begin date</label>
+					<b-form-datepicker
+						id="datepicker_from"
+						v-model="date_from"
+						:max="date_to"
+					>
+					</b-form-datepicker>
+				</b-form-group>
+			</b-col>
 
-			<b-button variant="primary" v-b-toggle.report_table @click="print_date">
-				Generate Report
-			</b-button>
-		</div>
-		<div>
-			<b-collapse id="report_table">
-				<b-table
-					hover
-					striped
-					selectable
-					multiple
-					bordered
-					:filter="date_from"
-					:filter-function="filter_report"
-					@row-clicked="on_row_clicked"
-					:items="transactions"
+			<b-col>
+				<b-form-group>
+					<label for="datepicker_to">Select end date</label>
+					<b-form-datepicker
+						id="datepicker_to"
+						v-model="date_to"
+						:min="date_from"
+						:max="date_today"
+					>
+					</b-form-datepicker>
+				</b-form-group>
+			</b-col>
+		</b-row>
+
+		<b-row>
+			<b-col class="text-center">
+				<b-button class="btn" variant="primary" size="lg"
+					:disabled="date_from == null || date_to == null"
+					@click="generate_report"
 				>
-					<template #cell(orig_price)="data">
-						<b-badge class="price_badge" variant="info">
-							&#8369;
-							{{data.item.orig_price}}
-						</b-badge>
-					</template>
-					<template #cell(ret_price)="data">
-						<b-badge class="price_badge" variant="success">
-							&#8369;
-							{{data.item.ret_price}}
-						</b-badge>
-					</template>
-					<template #cell(qty)="data">
-						<b-badge class="price_badge" v-if="data.item.qty == 0" variant="danger">
-							{{data.item.qty}}
-						</b-badge>
-					</template>
-				</b-table>
-			</b-collapse>
-		</div>
-	</b-card>
+					Generate Report
+				</b-button>
+			</b-col>
+		</b-row>
+	</b-form>
+
+	<b-row
+		style="padding: 32px;"
+		v-if="transactions.length > 0"
+	>
+		<b-form-group>
+			<b-dropdown right text="views">
+				<b-dropdown-form v-for="field in fields" :key="field.transaction_id">
+					<b-form-checkbox :disabled="visible_fields.length == 1 && field.visible"
+						v-model="field.visible">
+						{{ field.label }}
+					</b-form-checkbox>
+				</b-dropdown-form>
+			</b-dropdown>
+		</b-form-group>
+
+		<b-table
+			hover
+			striped
+			bordered
+			small
+			:fields="visible_fields"
+			:items="transactions"
+			:busy="is_busy"
+		>
+			<template #cell(orig_price)="data">
+				<b-badge class="price_badge" variant="info">
+					&#8369;
+					{{data.item.orig_price}}
+				</b-badge>
+			</template>
+			<template #cell(ret_price)="data">
+				<b-badge class="price_badge" variant="success">
+					&#8369;
+					{{data.item.ret_price}}
+				</b-badge>
+			</template>
+			<template #cell(qty)="data">
+				<b-badge class="price_badge" v-if="data.item.qty == 0" variant="danger">
+					{{data.item.qty}}
+				</b-badge>
+			</template>
+		</b-table>
+	</b-row>
 </div>
 </template>
 
 <script>
+const Axios = require("axios");
 
 export default {
 	name: "Report",
@@ -73,18 +100,20 @@ export default {
 	},
 
 	mounted: function() {
-
 	},
 
 	methods: {
-		print_date: function(){
+		generate_report: async function() {
+			this.is_busy = true;
+			const r_report = await Axios.post("/get_transactions_range", {
+				date_from: this.date_from,
+				date_to: this.date_to,
+			});
 
-		},
-
-		filter_report: function(row, filter) {
-			if (row.date_sold >= filter && row.date_sold <= this.date_to){
-				return true;
+			if (r_report.data.success) {
+				this.transactions = r_report.data.results;
 			}
+			this.is_busy = false;
 		},
 	},
 
@@ -95,39 +124,25 @@ export default {
 	},
 
 	data: function() {
-		const now = new Date();
-		const today = now.toISOString().split('T')[0];
-
 		return {
 			fields: [
-
+				{key: "transaction_id", label: "Transaction ID", class: "text-center", visible: true,},
+				{key: "date", label: "Date", class: "text-center", visible: true},
+				{key: "time", label: "Time", class: "text-center", visible: true},
+				{key: "type", label: "Type", class: "text-center", visible: true},
+				{key: "customer_name", label: "Customer Name", class: "text-center", visible: true},
+				{key: "customer_address", label: "Customer Address", class: "text-center", visible: true},
+				{key: "item_name", label: "Item Name", class: "text-center", visible: true},
+				{key: "item_code", label: "Item Code", class: "text-center", visible: true},
+				{key: "qty_sold", label: "Quantity Sold", class: "text-center", visible: true},
+				{key: "total_price", label: "Total Price", class: "text-center", visible: true},
+				{key: "profit", label: "Profit", class: "text-center", visible: true},
 			],
-			transactions: [
-				{
-					item_name: "Spoon",
-					quantity_sold: 3,
-					total_price: 300,
-					profit: 150,
-					date_sold: "2021-01-18",
-				},
-				{
-					item_name: "Fork",
-					quantity_sold: 4,
-					total_price: 350,
-					profit: 200,
-					date_sold: "2021-01-19",
-				},
-				{
-					item_name: "Plate",
-					quantity_sold: 2,
-					total_price: 400,
-					profit: 400,
-					date_sold: "2021-01-20",
-				},
-			],
-			date_from: "",
-			date_to: today,
-			date_today: today,
+			transactions: [],
+			is_busy: false,
+			date_from: null,
+			date_to: new Date(),
+			date_today: new Date(),
 		}
 	},
 }
@@ -137,25 +152,5 @@ export default {
 .report
 {
 	padding: 16px;
-
-	.report_container
-	{
-		display: flex;
-	}
-
-	.datepicker
-	{
-		width: 20%;
-		margin: auto;
-		box-shadow: 0 0 8px grey;
-		margin-bottom: 16px;
-	}
-
-	.sample_card
-	{
-		width: 20%;
-		margin: auto;
-		background-color: red;
-	}
 }
 </style>

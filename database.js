@@ -10,12 +10,12 @@ class Database
 			user: "root",
 
 			//WALDO ETO SAYO AHHHHH, UNCOMMENT MO LANG TO
-			password: "useruser",
-			database: "chazydes",
+			// password: "useruser",
+			// database: "chazydes",
 
 			//ETO SAKIN PLEASE WAG MONG IDELETE, ICOMMENT MO LANG
-			//database: "chazydes",
-			//password: "",
+			database: "chazydes",
+			password: "",
 			//socketPath: "/opt/lampp/var/mysql/mysql.sock",
 		});
 

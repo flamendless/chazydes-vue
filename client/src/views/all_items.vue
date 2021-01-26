@@ -48,6 +48,16 @@
 
 		<b-tab title="Table" lazy>
 			<b-card>
+				<b-form-group>
+					<b-dropdown right text="views">
+						<b-dropdown-form v-for="field in fields" :key="field.item_id">
+							<b-form-checkbox :disabled="visible_fields.length == 1 && field.visible"
+								v-model="field.visible">
+								{{ field.label }}
+							</b-form-checkbox>
+						</b-dropdown-form>
+					</b-dropdown>
+				</b-form-group>
 				<b-table
 					hover
 					striped
@@ -55,7 +65,7 @@
 					multiple
 					bordered
 					:items="items"
-					:fields="fields"
+					:fields="visible_fields"
 				>
 				</b-table>
 			</b-card>
@@ -122,6 +132,9 @@ export default {
 		get_item_count: function() {
 			const r = Math.ceil(this.items.length/this.items_per_row);
 			return r;
+		},
+		visible_fields: function() {
+			return this.fields.filter(field => field.visible);
 		},
 	},
 
@@ -195,13 +208,13 @@ export default {
 			items_per_row: 5,
 			items: [],
 			fields: [
-				{key: "item_id", label: "Item ID", class: "text-center"},
-				{key: "name", label: "Name"},
-				{key: "code", label: "Code"},
-				{key: "qty", label: "Stock", class: "text-center"},
-				{key: "orig_price", label: "Original Price"},
-				{key: "ret_price", label: "Retail Price"},
-				{key: "supplier_name", label: "Supplier"},
+				{key: "item_id", label: "Item ID", class: "text-center", visible: true},
+				{key: "name", label: "Name", visible: true},
+				{key: "code", label: "Code", visible: true},
+				{key: "qty", label: "Stock", class: "text-center", visible: true},
+				{key: "orig_price", label: "Original Price", visible: true},
+				{key: "ret_price", label: "Retail Price", visible: true},
+				{key: "supplier_name", label: "Supplier", visible: true},
 			],
 		}
 	},
@@ -254,8 +267,6 @@ export default {
 			}
 		}
 	}
-
-
 }
 
 </style>

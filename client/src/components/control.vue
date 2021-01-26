@@ -5,7 +5,7 @@
 		:title="this.name"
 		body-class="text-left"
 		:img-src="this.background"
-		class="control_panel"
+		class="control"
 		@click="panel_on_click()"
 	>
 		<b-card-text>
@@ -18,10 +18,10 @@
 export default {
 	name: "Control",
 	props: {
-		name: Object,
-		background: Object,
-		desc: Object,
-		href: Object,
+		name: String,
+		background: String,
+		desc: String,
+		href: String,
 	},
 
 	methods: {
@@ -37,9 +37,10 @@ export default {
 
 <style lang="scss" scoped>
 
-.control_panel
+.control
 {
-	padding: 16px;
+	margin: 32px;
+	box-shadow: 0 0 8px grey;
 	cursor: pointer;
 }
 </style>

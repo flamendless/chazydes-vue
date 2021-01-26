@@ -16,6 +16,8 @@ const BodyParser = require("body-parser");
 app.use(BodyParser.urlencoded({extended: true}));
 app.use(BodyParser.json());
 
+const LOW_THRESHOLD = 10;
+
 const multer = require("multer");
 const disk_storage = multer.diskStorage({
 	destination: "client/src/uploads/",
@@ -234,6 +236,42 @@ app.get("/get_items_list", (req, res) => {
 	}));
 });
 
+app.get("/get_items_low", (req, res) => {
+	const args = req.params;
+	const query = `SELECT
+		item_id, name, code, qty, orig_price, ret_price
+		FROM tbl_item WHERE qty > 0 AND qty < ${LOW_THRESHOLD}`;
+
+	DB.query(query)
+	.then(data => {
+		if (data.success)
+			res.json(data);
+		else
+			res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
+app.get("/get_items_out", (req, res) => {
+	const args = req.params;
+	const query = `SELECT
+		item_id, name, code, qty, orig_price, ret_price
+		FROM tbl_item WHERE qty = 0`;
+
+	DB.query(query)
+	.then(data => {
+		if (data.success)
+			res.json(data);
+		else
+			res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+});
+
 app.get("/get_customers", (req, res) => {
 	const args = req.params;
 	const query = `SELECT * FROM tbl_customer`;
@@ -276,6 +314,41 @@ app.get("/get_all_transactions", (req, res) => {
 		INNER JOIN tbl_customer as c ON t.customer_id = c.customer_id`;
 
 	DB.query(query)
+	.then(data => {
+		if (data.success) res.json(data);
+		else res.json({success: false});
+	}).catch(err => res.json({
+		success: false,
+		err: err,
+	}));
+})
+
+app.post("/get_transactions_range", (req, res) => {
+	const args = req.body;
+
+	const query = `SELECT
+			t.transaction_id,
+			DATE_FORMAT(t.transaction_dt, '%m/%d/%Y') AS date,
+			DATE_FORMAT(t.transaction_dt, '%h:%i:%s %p') AS time,
+			t.type,
+			c.customer_id,
+			c.fullname AS customer_name,
+			c.address AS customer_address,
+			sold.item_sold_id,
+			sold.item_id,
+			sold.qty_sold,
+			sold.total_price,
+			sold.profit,
+			i.item_id,
+			i.name AS item_name,
+			i.code AS item_code
+		FROM tbl_transaction as t
+		INNER JOIN tbl_customer as c ON t.customer_id = c.customer_id
+		INNER JOIN tbl_item_sold as sold ON t.transaction_id = sold.transaction_id
+		INNER JOIN tbl_item as i ON i.item_id = sold.item_id
+		WHERE t.transaction_dt BETWEEN ? AND ?`;
+
+	DB.query(query, [args.date_from, args.date_to])
 	.then(data => {
 		if (data.success) res.json(data);
 		else res.json({success: false});
