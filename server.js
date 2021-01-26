@@ -16,6 +16,16 @@ const BodyParser = require("body-parser");
 app.use(BodyParser.urlencoded({extended: true}));
 app.use(BodyParser.json());
 
+const cron = require("node-cron");
+const child_process = require("child_process");
+
+cron.schedule("0 18 * * *", function() {
+	child_process.execFile("yarn", ["run", "backup_sql"], function(err, stdout) {
+		if (err) console.log(err);
+		else console.log(stdout);
+	});
+})
+
 const LOW_THRESHOLD = 10;
 
 const multer = require("multer");
@@ -51,6 +61,13 @@ app.post("/upload_item_images", upload.array("img_items"), function(req, res) {
 		success: false,
 		err: err,
 	}));
+});
+
+app.get("/backup_data_now", (req, res) => {
+	child_process.execFile("yarn", ["run", "backup_sql"], function(err, stdout) {
+		if (err) res.json({success: false, err: err});
+		else res.json({success: true});
+	});
 });
 
 app.post("/remove_item_image", (req, res) => {

@@ -49,6 +49,7 @@
 				<template #button-content>Account</template>
 
 				<div v-if="signed_in">
+					<b-dropdown-item @click="backup">Backup Database</b-dropdown-item>
 					<b-dropdown-item @click="on_sign_out">Sign Out</b-dropdown-item>
 				</div>
 
@@ -63,6 +64,8 @@
 </template>
 
 <script>
+const Axios = require("axios");
+
 export default {
 	name: "NavBar",
 	props: {
@@ -91,6 +94,13 @@ export default {
 	},
 
 	methods: {
+		backup: async function() {
+			const r = await Axios.get("/backup_data_now");
+			if (r.data.success) {
+				alert("Database is successfully save. Please check the 'backups/' folder");
+				alert("Do note that automatic backup happens at 6pm daily");
+			}
+		},
 		check_signed_in: function() {
 			const email = sessionStorage["email"];
 

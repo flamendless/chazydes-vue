@@ -8,6 +8,7 @@
     "express": "^4.17.1",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
+    "node-cron": "^2.0.3",
     "nodemon": "^2.0.6"
   },
   "name": "chazydes-vue",
@@ -21,6 +22,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "dev": "concurrently --kill-others \"nodemon server.js\" \"cd client && yarn serve\"",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "backup_sql": "node backup_sql.js"
   }
 }
