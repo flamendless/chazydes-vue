@@ -57,9 +57,25 @@
 					</b-form-checkbox>
 				</b-dropdown-form>
 			</b-dropdown>
+
+			<b-button
+				style="margin: 32px;"
+				variant="primary"
+				@click="save_to_pdf()"
+			>
+				Save to PDF
+			</b-button>
+
+			<b-button
+				variant="success"
+				@click="save_to_pdf(true)"
+			>
+				Print
+			</b-button>
 		</b-form-group>
 
 		<b-table
+			id="tbl_report"
 			hover
 			striped
 			bordered
@@ -92,14 +108,13 @@
 
 <script>
 const Axios = require("axios");
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 export default {
 	name: "Report",
 	props: {
 		info: Object,
-	},
-
-	mounted: function() {
 	},
 
 	methods: {
@@ -114,6 +129,20 @@ export default {
 				this.transactions = r_report.data.results;
 			}
 			this.is_busy = false;
+		},
+		save_to_pdf: function(is_print) {
+			const doc = new jsPDF();
+			doc.autoTable({html: "#tbl_report"});
+
+			if (is_print)
+				doc.autoPrint();
+
+			doc.save("tbl_report.pdf", {
+				returnPromise: true,
+			}).then(function() {
+				if (is_print)
+					alert("Please open the pdf file to print");
+			});
 		},
 	},
 

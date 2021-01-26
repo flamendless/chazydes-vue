@@ -48,25 +48,46 @@
 
 		<b-tab title="Table" lazy>
 			<b-card>
-				<b-form-group>
-					<b-dropdown right text="views">
-						<b-dropdown-form v-for="field in fields" :key="field.item_id">
-							<b-form-checkbox :disabled="visible_fields.length == 1 && field.visible"
-								v-model="field.visible">
-								{{ field.label }}
-							</b-form-checkbox>
-						</b-dropdown-form>
-					</b-dropdown>
-				</b-form-group>
+				<b-button-toolbar aria-label="Actions Toolbar" justify class="btn_toolbar">
+					<b-form-group>
+						<b-input-group>
+							<b-form-input
+								v-model="search" placeholder="Search here"
+								@update="on_search_change">
+							</b-form-input>
+							<b-input-group-append>
+								<b-input-group-text>
+									<font-awesome-icon icon="search" />
+								</b-input-group-text>
+							</b-input-group-append>
+						</b-input-group>
+					</b-form-group>
+
+					<b-form-group>
+						<b-dropdown right text="views">
+							<b-dropdown-form v-for="field in fields" :key="field.item_id">
+								<b-form-checkbox :disabled="visible_fields.length == 1 && field.visible"
+									v-model="field.visible">
+									{{ field.label }}
+								</b-form-checkbox>
+							</b-dropdown-form>
+						</b-dropdown>
+					</b-form-group>
+				</b-button-toolbar>
+
 				<b-table
 					hover
 					striped
-					selectable
-					multiple
 					bordered
+					:filter="filter"
 					:items="items"
 					:fields="visible_fields"
 				>
+					<template #cell(item_id)="data">
+						<a :href="'/view_item?item_id=' + data.item.item_id">
+							IID#{{data.item.item_id}}
+						</a>
+					</template>
 				</b-table>
 			</b-card>
 		</b-tab>
@@ -139,6 +160,10 @@ export default {
 	},
 
 	methods: {
+		on_search_change: function() {
+			if (this.search.length > 0) this.filter = this.search;
+			else this.filter = null;
+		},
 		index: function(i, j){
 			return (this.items_per_row * (i-1) + (j-1));
 		},
@@ -206,6 +231,8 @@ export default {
 			email: null,
 			tab: 0,
 			items_per_row: 5,
+			search: "",
+			filter: null,
 			items: [],
 			fields: [
 				{key: "item_id", label: "Item ID", class: "text-center", visible: true},
