@@ -48,8 +48,6 @@ export default {
 		Notification,
 		Control,
 	},
-
-
 }
 
 </script>

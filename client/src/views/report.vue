@@ -147,7 +147,7 @@ export default {
 				date_to: this.date_to,
 			});
 
-			if (r_report.data.success && r_report.data.results > 0) {
+			if (r_report.data.success && r_report.data.results.length > 0) {
 				this.empty = false;
 				this.transactions = r_report.data.results;
 			} else {
