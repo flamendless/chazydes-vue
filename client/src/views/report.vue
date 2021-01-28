@@ -48,31 +48,41 @@
 		style="padding: 32px;"
 		v-if="transactions.length > 0"
 	>
-		<b-form-group>
-			<b-dropdown right text="views">
-				<b-dropdown-form v-for="field in fields" :key="field.transaction_id">
-					<b-form-checkbox :disabled="visible_fields.length == 1 && field.visible"
-						v-model="field.visible">
-						{{ field.label }}
-					</b-form-checkbox>
-				</b-dropdown-form>
-			</b-dropdown>
+		<b-button-toolbar aria-label="Actions Toolbar" justify class="btn_toolbar">
+			<b-form-group style="margin-right: 64px;">
+				<b-dropdown right text="views">
+					<b-dropdown-form v-for="field in fields" :key="field.transaction_id">
+						<b-form-checkbox :disabled="visible_fields.length == 1 && field.visible"
+							v-model="field.visible">
+							{{ field.label }}
+						</b-form-checkbox>
+					</b-dropdown-form>
+				</b-dropdown>
+			</b-form-group>
 
-			<b-button
-				style="margin: 32px;"
-				variant="primary"
-				@click="save_to_pdf()"
-			>
-				Save to PDF
-			</b-button>
+			<b-button-group>
+				<SaveAsExcel
+					ref="save_as_excel"
+					name="Report"
+					:data="transactions"
+					:fields="visible_fields"
+					:filter="filter"
+				/>
+				<b-button
+					variant="primary"
+					@click="save_to_pdf()"
+				>
+					Save to PDF
+				</b-button>
 
-			<b-button
-				variant="success"
-				@click="save_to_pdf(true)"
-			>
-				Print
-			</b-button>
-		</b-form-group>
+				<b-button
+					variant="success"
+					@click="save_to_pdf(true)"
+				>
+					Print
+				</b-button>
+			</b-button-group>
+		</b-button-toolbar>
 
 		<b-table
 			id="tbl_report"
@@ -102,7 +112,15 @@
 				</b-badge>
 			</template>
 		</b-table>
+
 	</b-row>
+
+	<div v-if="empty">
+		<h1 align="center" style="margin: 32px;">
+			No data found within selected dates.
+			Try selecting a lower "begin date".
+		</h1>
+	</div>
 </div>
 </template>
 
@@ -110,11 +128,15 @@
 const Axios = require("axios");
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import SaveAsExcel from "@/components/save_as_excel.vue"
 
 export default {
 	name: "Report",
 	props: {
 		info: Object,
+	},
+	components: {
+		SaveAsExcel,
 	},
 
 	methods: {
@@ -125,8 +147,11 @@ export default {
 				date_to: this.date_to,
 			});
 
-			if (r_report.data.success) {
+			if (r_report.data.success && r_report.data.results > 0) {
+				this.empty = false;
 				this.transactions = r_report.data.results;
+			} else {
+				this.empty = true;
 			}
 			this.is_busy = false;
 		},
@@ -155,20 +180,22 @@ export default {
 	data: function() {
 		return {
 			fields: [
-				{key: "transaction_id", label: "Transaction ID", class: "text-center", visible: true,},
-				{key: "date", label: "Date", class: "text-center", visible: true},
-				{key: "time", label: "Time", class: "text-center", visible: true},
-				{key: "type", label: "Type", class: "text-center", visible: true},
-				{key: "customer_name", label: "Customer Name", class: "text-center", visible: true},
-				{key: "customer_address", label: "Customer Address", class: "text-center", visible: true},
-				{key: "item_name", label: "Item Name", class: "text-center", visible: true},
-				{key: "item_code", label: "Item Code", class: "text-center", visible: true},
-				{key: "qty_sold", label: "Quantity Sold", class: "text-center", visible: true},
-				{key: "total_price", label: "Total Price", class: "text-center", visible: true},
-				{key: "profit", label: "Profit", class: "text-center", visible: true},
+				{key: "transaction_id", label: "Transaction ID", class: "text-center", visible: true, col_width: 5},
+				{key: "date", label: "Date", class: "text-center", visible: true, col_width: 15},
+				{key: "time", label: "Time", class: "text-center", visible: true, col_width: 15},
+				{key: "type", label: "Type", class: "text-center", visible: true, col_width: 10},
+				{key: "customer_name", label: "Customer Name", class: "text-center", visible: true, col_width: 20},
+				{key: "customer_address", label: "Customer Address", class: "text-center", visible: true, col_width: 25},
+				{key: "item_name", label: "Item Name", class: "text-center", visible: true, col_width: 15},
+				{key: "item_code", label: "Item Code", class: "text-center", visible: true, col_width: 10},
+				{key: "qty_sold", label: "Quantity Sold", class: "text-center", visible: true, col_width: 5},
+				{key: "total_price", label: "Total Price", class: "text-center", visible: true, col_width: 10},
+				{key: "profit", label: "Profit", class: "text-center", visible: true, col_width: 10},
 			],
+			filter: null,
 			transactions: [],
 			is_busy: false,
+			empty: false,
 			date_from: null,
 			date_to: new Date(),
 			date_today: new Date(),
@@ -181,5 +208,9 @@ export default {
 .report
 {
 	padding: 16px;
+}
+
+.btn_toolbar {
+	margin-bottom: 32px;
 }
 </style>
