@@ -137,21 +137,32 @@
 								</p>
 							</div>
 							<b-form-group v-for="item in selected_rows"
-								:key="item.index" >
+								:key="item.index"
+								class="each_item"
+							>
 								<ValidationProvider
 									name="ItemQuantity"
 									rules="required"
 									v-slot="{errors}"
 								>
-									<p>
-										{{item.name}}
-									</p>
+									<b-row style="margin-bottom: 16px;">
+										<b-col>
+											<h4>{{item.name}}</h4>
+											<b-badge variant="warning">
+												Item Code: {{item.code}}
+											</b-badge>
+											<b-badge variant="danger">
+												Qty. in Stock: {{item.qty}}
+											</b-badge>
+										</b-col>
+									</b-row>
 
 									<b-form-input
 										type="number"
 										v-model="item.qty_sold"
 										placeholder="Quantity"
 										min="1"
+										:max="item.qty"
 										@update="calculate_total_price"
 									></b-form-input>
 
@@ -176,10 +187,9 @@
 										{{ errors[0] }}
 									</b-form-invalid-feedback>
 								</ValidationProvider>
-
-								<hr>
 							</b-form-group>
 						</div>
+
 						<div class="buttonSection">
 							<h4>
 								<b-badge class="total_badge" variant="success">
@@ -339,7 +349,7 @@ export default {
 			});
 			const t_id = r_transaction.data.results.insertId;
 
-			for (let i = 0; i < this.selected_rows.length; i++){
+			for (let i = 0; i < this.selected_rows.length; i++) {
 				const row = this.selected_rows[i];
 				const tp = row.ret_price * row.qty_sold;
 				const tr = row.orig_price * row.qty_sold;
@@ -365,6 +375,8 @@ export default {
 						t_id: t_id
 					}
 				});
+			} else {
+				console.log(r_sold);
 			}
 		},
 	}
@@ -381,7 +393,7 @@ export default {
 	.formTab1
 	{
 		margin: auto;
-		width: 50%;
+		width: 90%;
 
 		.formTitle
 		{
@@ -418,8 +430,19 @@ export default {
 
 		.itemSection
 		{
-			display: block;
+			display: flex;
+			flex-direction: column;
 			margin: auto;
+			width: 80%;
+			padding: 8px;
+
+			.each_item
+			{
+				padding: 8px;
+				margin-bottom: 32px;
+				box-shadow: 0px 0px 8px grey;
+				border-radius: 16px;
+			}
 		}
 
 		.buttonSection

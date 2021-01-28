@@ -497,7 +497,9 @@ app.post("/new_transaction", (req, res) => {
 		VALUES(NOW(), ?, ?)`;
 
 	DB.query(query, params).then(data => {
-		res.json(data);
+		if (data.success) {
+			res.json(data);
+		}
 	}).catch(err => res.json({
 		success: false,
 		err: err,
@@ -507,6 +509,7 @@ app.post("/new_transaction", (req, res) => {
 app.post("/add_item_sold", (req, res) => {
 	const args = req.body;
 	const params = [];
+	const params2 = [];
 	const query = `INSERT INTO
 		tbl_item_sold(item_id, qty_sold, total_price, profit, transaction_id)
 		VALUES ?`;
@@ -517,15 +520,33 @@ app.post("/add_item_sold", (req, res) => {
 			arg.item_id, arg.qty_sold, arg.total_price,
 			arg.profit, arg.transaction_id
 		]);
+		params2.push([args.qty_sold, args.item_id]);
 	}
 
 	DB.query(query, [params]).then(data => {
-		res.json(data);
+		if (data.success) {
+			let queries = "";
+
+			for (let i = 0; i < params2.length; i++) {
+				const p = params2[i];
+				const data = [p.qty_sold, p.item_id];
+
+				queries += MySQL.format("UPDATE tbl_item SET qty = qty - ? WHERE item_id = ?;", data);
+			}
+
+			DB.query(queries).then(data2 => {
+				res.json(data2);
+			}).catch(err => res.json({
+				success: false,
+				err: err,
+			}));
+		}
 	}).catch(err => res.json({
 		success: false,
 		err: err,
 	}));
 });
+
 
 app.listen(PORT, () => {
 	console.log(`server listening at http://localhost:${PORT}`)
