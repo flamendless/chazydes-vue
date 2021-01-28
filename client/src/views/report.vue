@@ -119,6 +119,7 @@ export default {
 
 	methods: {
 		generate_report: async function() {
+
 			this.is_busy = true;
 			const r_report = await Axios.post("/get_transactions_range", {
 				date_from: this.date_from,
@@ -127,6 +128,7 @@ export default {
 
 			if (r_report.data.success) {
 				this.transactions = r_report.data.results;
+				alert("Successful!");
 			}
 			this.is_busy = false;
 		},
