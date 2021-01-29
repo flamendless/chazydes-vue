@@ -363,7 +363,8 @@ app.post("/get_transactions_range", (req, res) => {
 		INNER JOIN tbl_customer as c ON t.customer_id = c.customer_id
 		INNER JOIN tbl_item_sold as sold ON t.transaction_id = sold.transaction_id
 		INNER JOIN tbl_item as i ON i.item_id = sold.item_id
-		WHERE t.transaction_dt BETWEEN ? AND ?`;
+		WHERE CAST(t.transaction_dt AS DATE) BETWEEN
+			CAST(? AS DATE) AND CAST(? AS DATE)`;
 
 	DB.query(query, [args.date_from, args.date_to])
 	.then(data => {
