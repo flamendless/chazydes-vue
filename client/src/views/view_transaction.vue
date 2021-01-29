@@ -83,19 +83,16 @@ const Axios = require("axios");
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import SaveAsExcel from "@/components/save_as_excel.vue"
-
 export default {
 	name: "ViewTransaction",
 	components: {
 		SaveAsExcel,
 	},
-
 	mounted: async function() {
 		const q = this.$route.query;
 		const t_id = q.t_id;
 		const r_transaction = await Axios.get("/get_transaction/" + t_id);
 		const res = r_transaction.data.results
-
 		if (res.length > 0) {
 			for (let i = 0; i < res.length; i++) {
 				const data = res[i];
@@ -113,12 +110,10 @@ export default {
 					item_name: data.name,
 					item_code: data.code,
 				}
-
 				this.transaction_details.push(t);
 			}
 		}
 	},
-
 	methods: {
 		on_activate_tab: function(new_i) {
 			if (new_i == 1) {
@@ -129,7 +124,6 @@ export default {
 			if (this.images[page_num] == null) {
 				const t = this.transaction_details[page_num - 1];
 				const r_img = await Axios.get("/get_image_by_item_id/" + t.item_id);
-
 				if (r_img.data.results.length > 0) {
 					const filename = r_img.data.results[0].filename;
 					const image = require("@/uploads/" + filename);
@@ -144,10 +138,8 @@ export default {
 			const doc = new jsPDF();
 			const id = this.transaction_details.transaction_id
 			doc.autoTable({html: "#tbl_transaction"});
-
 			if (is_print)
 				doc.autoPrint();
-
 			doc.save(`tbl_transaction_${id}.pdf`, {
 				returnPromise: true,
 			}).then(function() {
@@ -156,7 +148,6 @@ export default {
 			});
 		},
 	},
-
 	data: function() {
 		return {
 			transaction_details: [],
@@ -185,19 +176,16 @@ export default {
 .view_transaction
 {
 	padding: 16px;
-
 	.tableSection
 	{
 		margin: auto;
 		width: 80%;
 		border: none;
-
 		.itemText
 		{
 			text-align: center;
 		}
 	}
-
 	.item_img
 	{
 		width: 256px;
@@ -205,7 +193,6 @@ export default {
 		margin-bottom: 8px;
 	}
 }
-
 .btn_toolbar {
 	margin-bottom: 32px;
 	margin: auto;

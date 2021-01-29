@@ -70,21 +70,17 @@ const Axios = require("axios");
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import SaveAsExcel from "@/components/save_as_excel.vue"
-
 export default {
 	name: "AllTransactions",
 	components: {
 		SaveAsExcel,
 	},
-
 	mounted: function() {
 		Axios.get("/get_all_transactions").then(res => {
 			const data = res.data;
 			this.transactions = data.results;
-
 			for (let i = 0; i < this.transactions.length; i++) {
 				const t = this.transactions[i];
-
 				if (t.type == "walk_in")
 					t.transaction_type = "Walk In";
 				else if (t.type == "online")
@@ -92,7 +88,6 @@ export default {
 			}
 		});
 	},
-
 	methods:  {
 		on_search_change: function() {
 			if (this.search.length > 0) this.filter = this.search;
@@ -101,10 +96,8 @@ export default {
 		save_to_pdf: function(is_print) {
 			const doc = new jsPDF();
 			doc.autoTable({html: "#tbl_all_transactions"});
-
 			if (is_print)
 				doc.autoPrint();
-
 			doc.save("tbl_all_transactions.pdf", {
 				returnPromise: true,
 			}).then(function() {
@@ -113,7 +106,6 @@ export default {
 			});
 		},
 	},
-
 	data: function() {
 		return {
 			fields: [
@@ -129,7 +121,6 @@ export default {
 			transactions: []
 		}
 	},
-
 	computed: {
 		visible_fields: function() {
 			return this.fields.filter(field => field.visible);
@@ -145,13 +136,11 @@ export default {
 	width: 90%;
 	margin: auto;
 	padding: 16px;
-
 	.cardTitle
 	{
 		font-weight: bold;
 		text-align: center;
 	}
-
 	.btn_toolbar {
 		margin-bottom: 32px;
 	}

@@ -129,7 +129,6 @@ const Axios = require("axios");
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import SaveAsExcel from "@/components/save_as_excel.vue"
-
 export default {
 	name: "Report",
 	props: {
@@ -138,16 +137,13 @@ export default {
 	components: {
 		SaveAsExcel,
 	},
-
 	methods: {
 		generate_report: async function() {
-
 			this.is_busy = true;
 			const r_report = await Axios.post("/get_transactions_range", {
 				date_from: this.date_from,
 				date_to: this.date_to,
 			});
-
 			if (r_report.data.success && r_report.data.results.length > 0) {
 				this.empty = false;
 				this.transactions = r_report.data.results;
@@ -159,10 +155,8 @@ export default {
 		save_to_pdf: function(is_print) {
 			const doc = new jsPDF();
 			doc.autoTable({html: "#tbl_report"});
-
 			if (is_print)
 				doc.autoPrint();
-
 			doc.save("tbl_report.pdf", {
 				returnPromise: true,
 			}).then(function() {
@@ -171,13 +165,11 @@ export default {
 			});
 		},
 	},
-
 	computed: {
 		visible_fields: function() {
 			return this.fields.filter(field => field.visible);
 		},
 	},
-
 	data: function() {
 		return {
 			fields: [
@@ -210,7 +202,6 @@ export default {
 {
 	padding: 16px;
 }
-
 .btn_toolbar {
 	margin-bottom: 32px;
 }

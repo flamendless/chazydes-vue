@@ -30,7 +30,7 @@ class Database
 	{
 		return new Promise((resolve, reject) => {
 			this.db.query(sql, params, (err, results, fields) => {
-				console.log(err, results)
+				console.log(sql, err, results)
 				if (err)
 					reject(err);
 				else

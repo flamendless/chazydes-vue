@@ -41,7 +41,6 @@
 <script>
 import Notification from "@/components/notification.vue"
 import Control from "@/components/control.vue"
-
 export default {
 	name: "Dashboard",
 	components: {
@@ -49,18 +48,15 @@ export default {
 		Control,
 	},
 }
-
 </script>
 
 <style lang="scss" scoped>
 .dashboard
 {
 	padding: 16px;
-
 	.notification_section
 	{
 		margin-bottom: 16px;
 	}
 }
-
 </style>

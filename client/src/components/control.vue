@@ -23,7 +23,6 @@ export default {
 		desc: String,
 		href: String,
 	},
-
 	methods: {
 		panel_on_click: function()
 		{
@@ -36,7 +35,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .control
 {
 	margin: 32px;

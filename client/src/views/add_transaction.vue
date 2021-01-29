@@ -369,6 +369,9 @@ export default {
 			if (r_sold.data.success) {
 				this.is_submitting = false;
 				alert("Transaction complete");
+				alert(JSON.stringify(r_sold.data));
+				console.log("DATA IS: ");
+				console.log(r_sold.data);
 				this.$router.push({
 					name: "ViewTransaction",
 					query: {

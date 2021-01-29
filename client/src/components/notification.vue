@@ -92,15 +92,12 @@
 
 <script>
 const Axios = require("axios");
-
 export default {
 	name: "Notification",
-
 	mounted: function() {
 		this.fetch_items_low();
 		this.fetch_items_out();
 	},
-
 	methods: {
 		fetch_items_low: async function() {
 			this.busy_low = true;
@@ -127,7 +124,6 @@ export default {
 			this.$refs.tbl_out.refresh();
 		}
 	},
-
 	data: function() {
 		return {
 			fields: [
@@ -157,7 +153,6 @@ export default {
 		box-shadow: 0 0 8px grey;
 		margin-bottom: 16px;
 	}
-
 	.price_badge
 	{
 		padding: 8px;
