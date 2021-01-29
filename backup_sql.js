@@ -8,6 +8,6 @@ const pw = "useruser";
 const cmd = `/usr/bin/mysqldump -u ${username} -p${pw} chazydes > ${dir}/${filename}`;
 
 const dump = child_process.exec(cmd, [], function(err, stdout) {
-	if (err) console.log(err);
-	else console.log(stdout);
-});
+		if (err) console.log(err);
+		else console.log(stdout);
+	});

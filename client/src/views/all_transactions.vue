@@ -21,6 +21,14 @@
 			</b-form-group>
 
 			<b-button-group>
+				<SaveAsExcel
+					ref="save_as_excel"
+					name="AllTransactions"
+					:data="transactions"
+					:fields="visible_fields"
+					:filter="filter"
+				/>
+
 				<b-button
 					variant="primary"
 					@click="save_to_pdf()"
@@ -61,9 +69,13 @@
 const Axios = require("axios");
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import SaveAsExcel from "@/components/save_as_excel.vue"
 
 export default {
 	name: "AllTransactions",
+	components: {
+		SaveAsExcel,
+	},
 
 	mounted: function() {
 		Axios.get("/get_all_transactions").then(res => {
@@ -105,11 +117,11 @@ export default {
 	data: function() {
 		return {
 			fields: [
-				{key: "transaction_id", visible: true, label: "Transaction ID", class: 'text-center'},
-				{key: "date", sortable: true, visible: true, label: "Date and Time"},
-				{key: "transaction_type", sortable: true, visible: true, label: "Type"},
-				{key: "fullname", sortable: true, visible: true, label: "Customer Name"},
-				{key: "address", sortable: true, visible: true, label: "Address"},
+				{key: "transaction_id", visible: true, label: "Transaction ID", class: "text-center", col_width: 5},
+				{key: "date", sortable: true, visible: true, label: "Date and Time", col_width: 15},
+				{key: "transaction_type", sortable: true, visible: true, label: "Type", col_width: 10},
+				{key: "fullname", sortable: true, visible: true, label: "Customer Name", col_width: 25},
+				{key: "address", sortable: true, visible: true, label: "Address", col_width: 25},
 			],
 			filter: null,
 			search: "",

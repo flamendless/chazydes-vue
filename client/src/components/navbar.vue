@@ -17,6 +17,7 @@
 				{{ signed_in ? item.title2 : item.title }}
 			</b-nav-item>
 			<b-nav-item
+				v-if="signed_in"
 				to="/report"
 			>
 				Report
