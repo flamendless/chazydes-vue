@@ -520,7 +520,7 @@ app.post("/add_item_sold", (req, res) => {
 			arg.item_id, arg.qty_sold, arg.total_price,
 			arg.profit, arg.transaction_id
 		]);
-		params2.push([args.qty_sold, args.item_id]);
+		params2.push([arg.qty_sold, arg.item_id]);
 	}
 
 	DB.query(query, [params]).then(data => {
@@ -529,7 +529,7 @@ app.post("/add_item_sold", (req, res) => {
 
 			for (let i = 0; i < params2.length; i++) {
 				const p = params2[i];
-				const data = [p.qty_sold, p.item_id];
+				const data = [p[0], p[1]];
 
 				queries += MySQL.format("UPDATE tbl_item SET qty = qty - ? WHERE item_id = ?;", data);
 			}
