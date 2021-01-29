@@ -8,6 +8,7 @@ class Database
 		this.db = MySQL.createConnection({
 			host: "localhost",
 			user: "root",
+			multipleStatements: true,
 
 			//WALDO ETO SAYO AHHHHH, UNCOMMENT MO LANG TO
 			password: "useruser",

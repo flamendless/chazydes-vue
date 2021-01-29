@@ -6,8 +6,33 @@
 		@activate-tab="on_activate_tab"
 	>
 		<b-tab title="Summary" active>
+			<b-button-toolbar aria-label="Actions Toolbar" justify class="btn_toolbar">
+				<b-button-group>
+					<SaveAsExcel
+						ref="save_as_excel"
+						name="Transaction"
+						:data="transaction_details"
+						:fields="fields"
+					/>
+					<b-button
+						variant="primary"
+						@click="save_to_pdf()"
+					>
+						Save to PDF
+					</b-button>
+
+					<b-button
+						variant="success"
+						@click="save_to_pdf(true)"
+					>
+						Print
+					</b-button>
+				</b-button-group>
+			</b-button-toolbar>
+
 			<b-card class="tableSection">
 				<b-table
+					id="tbl_transaction"
 					bordered
 					stacked
 					:items="transaction_details"
@@ -55,9 +80,15 @@
 
 <script>
 const Axios = require("axios");
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import SaveAsExcel from "@/components/save_as_excel.vue"
 
 export default {
 	name: "ViewTransaction",
+	components: {
+		SaveAsExcel,
+	},
 
 	mounted: async function() {
 		const q = this.$route.query;
@@ -108,7 +139,22 @@ export default {
 			} else {
 				this.current_img = this.images[page_num];
 			}
-		}
+		},
+		save_to_pdf: function(is_print) {
+			const doc = new jsPDF();
+			const id = this.transaction_details.transaction_id
+			doc.autoTable({html: "#tbl_transaction"});
+
+			if (is_print)
+				doc.autoPrint();
+
+			doc.save(`tbl_transaction_${id}.pdf`, {
+				returnPromise: true,
+			}).then(function() {
+				if (is_print)
+					alert("Please open the pdf file to print");
+			});
+		},
 	},
 
 	data: function() {
@@ -118,17 +164,17 @@ export default {
 			current_img: null,
 			images: [],
 			fields: [
-				{key: "transaction_id", label: "Transaction ID", class: 'text-center', variant: "info",},
-				{key: "date", label: "Date", class: 'text-center'},
-				{key: "time", label: "Time", class: 'text-center'},
-				{key: "type", label: "Type", class: 'text-center'},
-				{key: "customer_name", label: "Customer Name", class: 'text-center'},
-				{key: "customer_address", label: "Customer Address", class: 'text-center'},
-				{key: "item_name", label: "Item Name", class: 'text-center'},
-				{key: "item_code", label: "Item Code", class: 'text-center'},
-				{key: "qty_sold", label: "Quantity Sold", class: 'text-center'},
-				{key: "total_price", label: "Total Price", class: 'text-center'},
-				{key: "profit", label: "Profit", class: 'text-center'},
+				{key: "transaction_id", label: "Transaction ID", class: "text-center", variant: "info", visible: true, col_width: 5},
+				{key: "date", label: "Date", class: "text-center", visible: true, col_width: 15},
+				{key: "time", label: "Time", class: "text-center", visible: true, col_width: 15},
+				{key: "type", label: "Type", class: "text-center", visible: true, col_width: 10},
+				{key: "customer_name", label: "Customer Name", class: "text-center", visible: true, col_width: 20},
+				{key: "customer_address", label: "Customer Address", class: "text-center", visible: true, col_width: 20},
+				{key: "item_name", label: "Item Name", class: "text-center", visible: true, col_width: 15},
+				{key: "item_code", label: "Item Code", class: "text-center", visible: true, col_width: 10},
+				{key: "qty_sold", label: "Quantity Sold", class: "text-center", visible: true, col_width: 5},
+				{key: "total_price", label: "Total Price", class: "text-center", visible: true, col_width: 10},
+				{key: "profit", label: "Profit", class: "text-center", visible: true, col_width: 10},
 			],
 		}
 	},
@@ -158,5 +204,10 @@ export default {
 		box-shadow: 0 0 8px grey;
 		margin-bottom: 8px;
 	}
+}
+
+.btn_toolbar {
+	margin-bottom: 32px;
+	margin: auto;
 }
 </style>

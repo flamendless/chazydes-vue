@@ -118,7 +118,8 @@ export default {
 		return {
 			fields: [
 				{key: "transaction_id", visible: true, label: "Transaction ID", class: "text-center", col_width: 5},
-				{key: "date", sortable: true, visible: true, label: "Date and Time", col_width: 15},
+				{key: "date", sortable: true, visible: true, label: "Date", col_width: 15},
+				{key: "time", sortable: true, visible: true, label: "Time", col_width: 15},
 				{key: "transaction_type", sortable: true, visible: true, label: "Type", col_width: 10},
 				{key: "fullname", sortable: true, visible: true, label: "Customer Name", col_width: 25},
 				{key: "address", sortable: true, visible: true, label: "Address", col_width: 25},
