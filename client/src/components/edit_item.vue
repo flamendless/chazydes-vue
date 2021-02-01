@@ -296,11 +296,28 @@ export default {
 			this.is_submitting = true;
 
 			if (this.form.supplier_name !== this.orig_form.supplier_name) {
-				const r_supplier = await Axios.post("/new_supplier", {
-					name: this.form.supplier_name,
-				});
+				let found = false;
 
-				this.form.supplier_id = r_supplier.data.results.insertId;
+				for (let i = 0; i < this.supplier_list.length; i++)
+				{
+					const supplier = this.supplier_list[i];
+
+					if (this.form.supplier_name === supplier.name)
+					{
+						found = true;
+						this.form.supplier_id = supplier.supplier_id;
+						break;
+					}
+				}
+
+				if (!found)
+				{
+					const r_supplier = await Axios.post("/new_supplier", {
+						name: this.form.supplier_name,
+					});
+
+					this.form.supplier_id = r_supplier.data.results.insertId;
+				}
 			}
 
 			const item_id = this.form.item_id;
@@ -374,17 +391,25 @@ export default {
 					});
 
 					if (r_images.data.success) {
-						alert("Item successfully added!");
-						this.$router.push({
-							name: "ViewItem",
-							query: {
-								item_id: item_id,
-							}
-						});
+						this.on_complete(item_id);
 					}
 				}
-				this.is_submitting = false;
+				else
+				{
+					this.on_complete(item_id);
+				}
 			}
+		},
+		on_complete: function(item_id)
+		{
+			this.is_submitting = false;
+			alert("Item successfully added!");
+			this.$router.push({
+				name: "ViewItem",
+				query: {
+					item_id: item_id,
+				}
+			});
 		}
 	}
 }
