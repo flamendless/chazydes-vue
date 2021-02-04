@@ -63,6 +63,9 @@
 		<b-tab title="Edit Item" class="tabContent" lazy>
 			<EditItem :form="form" :str_images="str_images" />
 		</b-tab>
+		<b-tab title="Delete Item" class="tabContent" lazy>
+			<DeleteItem :form="form" :str_images="str_images" />
+		</b-tab>
 	</b-tabs>
 </div>
 </template>
@@ -70,11 +73,13 @@
 <script>
 const Axios = require("axios");
 import EditItem from "@/components/edit_item.vue";
+import DeleteItem from "@/components/delete_item.vue";
 
 export default {
 	name: "ViewItem",
 	components: {
-		EditItem
+		EditItem,
+		DeleteItem
 	},
 
 	mounted: async function() {

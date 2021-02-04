@@ -9,6 +9,7 @@ import AddTransaction from "../views/add_transaction.vue"
 import ViewTransaction from "../views/view_transaction.vue"
 import AllTransactions from "../views/all_transactions.vue"
 import Report from "../views/report.vue"
+import Resupply from "../views/resupply.vue"
 
 
 Vue.use(VueRouter);
@@ -71,6 +72,11 @@ const routes = [
 		path: "/all_transactions",
 		name: "AllTransactions",
 		component: AllTransactions,
+	},
+	{
+		path: "/resupply",
+		name: "Resupply",
+		component: Resupply,
 	},
 ]
 

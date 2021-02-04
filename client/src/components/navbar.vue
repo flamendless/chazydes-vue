@@ -32,6 +32,9 @@
 				<b-dropdown-item to="/all_items">
 					View All Items
 				</b-dropdown-item>
+				<b-dropdown-item to="/resupply">
+					Resupply Item
+				</b-dropdown-item>
 			</b-nav-item-dropdown>
 
 			<b-nav-item-dropdown v-if="signed_in">

@@ -331,6 +331,8 @@ export default {
 	.images
 	{
 		margin-top: 32px;
+		width: 50%;
+		margin: auto;
 
 		.img_btn
 		{
